@@ -23,33 +23,10 @@ src/
   App.tsx                    # compone secciones activas
 ```
 
-## Contrato de configuración (resumen)
-```ts
-interface SiteConfig {
-  brand: { name: string; type: "restaurant" | "bakery" | "catering";
-           colors: { primary: string; accent: string }; logo?: string };
-  seo: { title: string; description: string; ogImage?: string; address: string; geo?: { lat: number; lng: number } };
-  sections: { featured: boolean; catering: boolean; gallery: boolean; testimonials: boolean; faq: boolean };
-  hero: { title: string; subtitle: string; image: string };
-  menu: { name: string; items: { name: string; description: string; price: number;
-          image?: string; tags?: ("vegano" | "sin-gluten" | "picante" | "contiene-nueces")[] }[] }[];
-  packages?: { name: string; minPeople?: number; pricePerPerson?: number; includes: string[] }[];
-  hours: { timeZone: string; schedule: Record<"mon"|"tue"|"wed"|"thu"|"fri"|"sat"|"sun", { open: string; close: string } | null> };
-  orders: { whatsapp: string; defaultMessage: string; minLeadDays: number;
-            depositPercent: number;            // 50
-            paymentNote: string };             // "Te enviamos los datos de pago por WhatsApp al confirmar."
-  customizer?: {
-    sizes: { id: string; label: string; servings: number; price: number }[];
-    flavors: { id: string; label: string; extraPrice?: number }[];
-    fillings: { id: string; label: string; extraPrice?: number }[];
-    decorations: { id: string; label: string; description: string; image?: string; extraPrice?: number;
-                   palettes: { id: string; label: string; colors: string[] }[] }[];
-    dedication?: { maxChars: number; extraPrice?: number };
-  };
-  contact: { email: string; address: string; mapsUrl: string; formProvider: "web3forms" | "formspree"; formKey: string };
-}
-```
-Los campos obligatorios se validan en compilación con TypeScript.
+## Contrato de configuración
+La fuente de verdad es [`src/content/types.ts`](../src/content/types.ts) (`SiteConfig`); el contenido de ejemplo está en `src/content/site.ts`. Incluye marca, SEO, secciones activables, menú con categorías y `id` por platillo, destacados, personalizador de pedidos, paquetes de catering, cómo pedir, galería, reseñas (con la marca `isSample`), FAQ, horarios, pedidos (WhatsApp, anticipación, porcentaje de anticipo) y contacto.
+
+Los campos obligatorios se validan en compilación con TypeScript, y `src/content/site.test.ts` comprueba las reglas que el tipo no puede expresar (ids únicos, precios enteros positivos, destacados existentes, formato de horas, WhatsApp válido, anticipo entre 1 y 100).
 
 ## Flujo del formulario de cotización
 1. El usuario llena el formulario; `useContactForm` valida por campo (nombre ≥ 2 caracteres, WhatsApp de 10 dígitos, correo opcional pero válido si se escribe, fecha ≥ hoy + `minLeadDays`, personas ≥ 1 para catering).

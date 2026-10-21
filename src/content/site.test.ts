@@ -1,0 +1,98 @@
+import { describe, expect, it } from "vitest";
+import { site } from "./site";
+
+const HEX = /^#[0-9a-f]{6}$/i;
+const TIME = /^([01]\d|2[0-3]):[0-5]\d$/;
+
+function unique(values: string[]) {
+  return new Set(values).size === values.length;
+}
+
+describe("site config (Mallow & Crumb)", () => {
+  const items = site.menu.flatMap((category) => category.items);
+
+  it("usa colores de marca en formato #RRGGBB", () => {
+    expect(site.brand.colors.primary).toMatch(HEX);
+    expect(site.brand.colors.accent).toMatch(HEX);
+  });
+
+  it("los ids del menú son únicos", () => {
+    expect(unique(site.menu.map((category) => category.id))).toBe(true);
+    expect(unique(items.map((item) => item.id))).toBe(true);
+  });
+
+  it("todos los precios del menú son enteros positivos", () => {
+    for (const item of items) {
+      expect(Number.isInteger(item.price)).toBe(true);
+      expect(item.price).toBeGreaterThan(0);
+    }
+  });
+
+  it("los destacados apuntan a platillos que existen", () => {
+    const ids = new Set(items.map((item) => item.id));
+    for (const id of site.featured.itemIds) {
+      expect(ids.has(id)).toBe(true);
+    }
+  });
+
+  it("el personalizador tiene opciones con ids únicos y datos válidos", () => {
+    const { sizes, flavors, fillings, decorations } = site.customizer;
+    expect(unique(sizes.map((s) => s.id))).toBe(true);
+    expect(unique(flavors.map((f) => f.id))).toBe(true);
+    expect(unique(fillings.map((f) => f.id))).toBe(true);
+    expect(unique(decorations.map((d) => d.id))).toBe(true);
+    for (const size of sizes) {
+      expect(size.servings).toBeGreaterThan(0);
+      expect(size.price).toBeGreaterThan(0);
+    }
+    for (const decoration of decorations) {
+      expect(decoration.palettes.length).toBeGreaterThan(0);
+      expect(unique(decoration.palettes.map((p) => p.id))).toBe(true);
+      for (const palette of decoration.palettes) {
+        for (const color of palette.colors) expect(color).toMatch(HEX);
+      }
+    }
+  });
+
+  it("los paquetes de catering tienen ids únicos y precio por persona positivo", () => {
+    expect(unique(site.packages.map((p) => p.id))).toBe(true);
+    for (const pack of site.packages) {
+      expect(pack.pricePerPerson ?? 1).toBeGreaterThan(0);
+    }
+  });
+
+  it("los horarios cubren los 7 días con formato HH:mm", () => {
+    const days = Object.keys(site.hours.schedule);
+    expect(days.sort()).toEqual(["fri", "mon", "sat", "sun", "thu", "tue", "wed"]);
+    for (const day of Object.values(site.hours.schedule)) {
+      if (day) {
+        expect(day.open).toMatch(TIME);
+        expect(day.close).toMatch(TIME);
+      }
+    }
+  });
+
+  it("los pedidos tienen WhatsApp válido, anticipo entre 1 y 100 y anticipación no negativa", () => {
+    expect(site.orders.whatsapp).toMatch(/^52\d{10}$/);
+    expect(site.orders.depositPercent).toBeGreaterThanOrEqual(1);
+    expect(site.orders.depositPercent).toBeLessThanOrEqual(100);
+    expect(site.orders.minLeadDays).toBeGreaterThanOrEqual(0);
+  });
+
+  it("el SEO respeta longitudes razonables", () => {
+    expect(site.seo.title.length).toBeLessThanOrEqual(60);
+    expect(site.seo.description.length).toBeLessThanOrEqual(160);
+  });
+
+  it("las reseñas de la configuración de ejemplo están marcadas como de muestra", () => {
+    for (const review of site.testimonials.items) {
+      expect(review.isSample).toBe(true);
+    }
+  });
+
+  it("las imágenes de la galería tienen texto alternativo", () => {
+    for (const image of site.gallery.images) {
+      expect(image.alt.trim().length).toBeGreaterThan(0);
+    }
+  });
+});
