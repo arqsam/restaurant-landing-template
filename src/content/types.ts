@@ -132,6 +132,11 @@ export interface SiteConfig {
     description: string;
     ogImage?: string;
   };
+  /** Textos cortos de la navegación que dependen del tipo de negocio. */
+  nav: {
+    /** Etiqueta del enlace al menú o catálogo: "Menú", "Pastelería", "Carta"... */
+    menuLabel: string;
+  };
   /** Activa o desactiva secciones opcionales. Hero, Contacto y Footer siempre se muestran. */
   sections: {
     featured: boolean;
