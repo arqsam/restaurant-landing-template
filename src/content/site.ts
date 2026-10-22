@@ -14,6 +14,7 @@ export const site: SiteConfig = {
     description:
       "Pasteles personalizados, postres de vitrina y mesas de postres para tus eventos. Pide por WhatsApp o cotiza en línea.",
   },
+  nav: { menuLabel: "Pastelería" },
   sections: {
     featured: true,
     customizer: true,

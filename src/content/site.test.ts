@@ -11,6 +11,10 @@ function unique(values: string[]) {
 describe("site config (Mallow & Crumb)", () => {
   const items = site.menu.flatMap((category) => category.items);
 
+  it("define la etiqueta del enlace al menú para la navegación", () => {
+    expect(site.nav.menuLabel.trim().length).toBeGreaterThan(0);
+  });
+
   it("usa colores de marca en formato #RRGGBB", () => {
     expect(site.brand.colors.primary).toMatch(HEX);
     expect(site.brand.colors.accent).toMatch(HEX);
