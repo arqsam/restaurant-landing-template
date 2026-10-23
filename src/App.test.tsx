@@ -23,6 +23,16 @@ describe("App", () => {
     );
   });
 
+  it("incluye el botón flotante de WhatsApp con el mismo enlace", () => {
+    render(<App />);
+    expect(
+      screen.getByRole("link", { name: /escríbenos por whatsapp/i }),
+    ).toHaveAttribute(
+      "href",
+      buildWhatsAppUrl(site.orders.whatsapp, site.orders.defaultMessage),
+    );
+  });
+
   it("aplica los colores de marca de la configuración como variables CSS", () => {
     render(<App />);
     const root = document.documentElement.style;
