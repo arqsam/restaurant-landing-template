@@ -1,3 +1,5 @@
+import { Catering } from "./components/Catering/Catering";
+import { Featured } from "./components/Featured/Featured";
 import { Header } from "./components/Header/Header";
 import { Hero } from "./components/Hero/Hero";
 import { Menu } from "./components/Menu/Menu";
@@ -5,6 +7,8 @@ import { SectionHeading } from "./components/SectionHeading/SectionHeading";
 import { WhatsAppButton } from "./components/WhatsAppButton/WhatsAppButton";
 import { site } from "./content/site";
 import { useBrandTheme } from "./hooks/useBrandTheme";
+import { buildPackageMessage } from "./lib/catering";
+import { resolveFeatured } from "./lib/featured";
 import { buildHeroFacts } from "./lib/hero";
 import { SECTION_IDS, buildNavLinks } from "./lib/nav";
 import { buildWhatsAppUrl } from "./lib/whatsapp";
@@ -39,6 +43,14 @@ function App() {
           secondaryHref={`#${SECTION_IDS.menu}`}
         />
 
+        {site.sections.featured ? (
+          <Featured
+            id={SECTION_IDS.featured}
+            intro={site.featured}
+            items={resolveFeatured(site.menu, site.featured.itemIds)}
+          />
+        ) : null}
+
         <section
           id={SECTION_IDS.menu}
           className="container section"
@@ -56,8 +68,24 @@ function App() {
 
         {/* Marcadores temporales para probar la navegación; cada uno se
             reemplaza por su sección real en los Issues siguientes. */}
+        {site.sections.catering ? (
+          <Catering
+            id={SECTION_IDS.catering}
+            intro={site.cateringIntro}
+            packages={site.packages}
+            beverages={site.beverages}
+            quoteLabel="Cotizar"
+            buildHref={(pkg) =>
+              buildWhatsAppUrl(site.orders.whatsapp, buildPackageMessage(pkg))
+            }
+          />
+        ) : null}
+
         {links
-          .filter((link) => link.id !== SECTION_IDS.menu)
+          .filter(
+            (link) =>
+              link.id !== SECTION_IDS.menu && link.id !== SECTION_IDS.catering,
+          )
           .map((link) => (
           <section
             key={link.id}
