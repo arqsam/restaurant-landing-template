@@ -1,23 +1,45 @@
+/*
+  Header flotante de vidrio translúcido. El color del vidrio sale de
+  --color-bg, así que se adapta solo a la marca de cada proyecto.
+  Móvil: una sola "píldora" con la marca y un botón redondo.
+  Escritorio: marca suelta a la izquierda y navegación en píldora a la derecha.
+*/
 .header {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 20;
-  background: color-mix(in srgb, var(--color-bg) 92%, transparent);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--color-border);
+  padding-top: var(--space-3);
+  pointer-events: none; /* solo la píldora recibe clics */
+}
+
+.bar,
+.nav {
+  --glass-bg: color-mix(in srgb, var(--color-bg) 62%, transparent);
 }
 
 .bar {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: var(--header-height);
+  min-height: 3.5rem;
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-5);
+  border: 1px solid color-mix(in srgb, #fff 60%, transparent);
+  border-radius: var(--radius-pill);
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
+  box-shadow: 0 8px 30px rgb(59 42 36 / 0.1);
+  pointer-events: auto;
 }
 
 .brand {
   font-family: var(--font-display);
   font-size: var(--text-xl);
   font-weight: 700;
+  letter-spacing: -0.01em;
   color: var(--color-primary);
   text-decoration: none;
 }
@@ -26,25 +48,30 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 2.75rem;
-  min-height: 2.75rem;
+  width: 2.75rem;
+  height: 2.75rem;
   border: 0;
-  border-radius: var(--radius-md);
-  background: transparent;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-surface) 75%, transparent);
+  box-shadow: var(--shadow-sm);
   color: var(--color-primary);
   cursor: pointer;
 }
 
-/* Móvil: panel desplegable bajo la barra */
+/* Móvil: panel de vidrio bajo la píldora */
 .nav {
   position: absolute;
-  top: 100%;
+  top: calc(100% + var(--space-2));
   left: 0;
   right: 0;
-  padding: var(--space-3) var(--gutter);
-  background: var(--color-bg);
-  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-3) var(--space-5);
+  border: 1px solid color-mix(in srgb, #fff 60%, transparent);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--color-bg) 93%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
   box-shadow: var(--shadow-md);
+  pointer-events: auto;
 }
 
 .nav[data-open="false"] {
@@ -71,8 +98,25 @@
   color: var(--color-accent-text);
 }
 
-/* Escritorio: navegación en línea, sin botón */
+/* Sin soporte de backdrop-filter: fondo opaco para no perder legibilidad */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .bar,
+  .nav {
+    background: var(--color-bg);
+  }
+}
+
 @media (min-width: 48em) {
+  .bar {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: none;
+  }
+
   .toggle {
     display: none;
   }
@@ -81,10 +125,9 @@
   .nav[data-open="false"] {
     position: static;
     display: block;
-    padding: 0;
-    background: none;
-    border: 0;
-    box-shadow: none;
+    padding: var(--space-2) var(--space-5);
+    border-radius: var(--radius-pill);
+    background: var(--glass-bg);
   }
 
   .list {
@@ -94,5 +137,14 @@
 
   .link {
     padding: var(--space-2) 0;
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  @media (min-width: 48em) {
+    .nav,
+    .nav[data-open="false"] {
+      background: var(--color-bg);
+    }
   }
 }

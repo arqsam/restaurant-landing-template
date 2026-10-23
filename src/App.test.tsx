@@ -3,13 +3,24 @@ import { describe, expect, it } from "vitest";
 import App from "./App";
 import { site } from "./content/site";
 import { buildNavLinks } from "./lib/nav";
+import { buildWhatsAppUrl } from "./lib/whatsapp";
 
 describe("App", () => {
-  it("muestra el nombre de la marca como título principal", () => {
+  it("muestra el título del hero como único título principal", () => {
     render(<App />);
     expect(
-      screen.getByRole("heading", { level: 1, name: /mallow & crumb/i }),
+      screen.getByRole("heading", { level: 1, name: site.hero.title }),
     ).toBeInTheDocument();
+  });
+
+  it("el botón principal abre WhatsApp con el número y mensaje de la configuración", () => {
+    render(<App />);
+    expect(
+      screen.getByRole("link", { name: /pedir por whatsapp/i }),
+    ).toHaveAttribute(
+      "href",
+      buildWhatsAppUrl(site.orders.whatsapp, site.orders.defaultMessage),
+    );
   });
 
   it("aplica los colores de marca de la configuración como variables CSS", () => {

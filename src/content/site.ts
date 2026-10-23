@@ -25,9 +25,18 @@ export const site: SiteConfig = {
   },
   hero: {
     title: "Postres que se quedan en la memoria",
+    titleEmphasis: "se quedan",
     subtitle:
       "Pasteles personalizados y postres artesanales, hechos bajo pedido para tus celebraciones.",
-    image: "/images/hero.webp",
+    image: {
+      src: "/images/hero-1080.webp",
+      srcSet:
+        "/images/hero-720.webp 720w, /images/hero-1080.webp 1080w, /images/hero-1440.webp 1440w, /images/hero-1920.webp 1920w",
+      sizes: "100vw",
+      width: 1080,
+      height: 1493,
+      alt: "Tarta de frutos rojos con fresas, moras y arándanos sobre un plato blanco",
+    },
     ctaLabel: "Pedir por WhatsApp",
   },
   menu: [
