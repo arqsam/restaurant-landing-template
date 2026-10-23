@@ -23,3 +23,14 @@
 .skip-link:focus {
   transform: translateY(0);
 }
+
+/* Ritmo vertical común de las secciones de contenido */
+.section {
+  padding-block: var(--space-9);
+}
+
+@media (max-width: 48em) {
+  .section {
+    padding-block: var(--space-8);
+  }
+}
