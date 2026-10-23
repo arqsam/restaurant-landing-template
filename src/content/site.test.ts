@@ -58,6 +58,15 @@ describe("site config (Mallow & Crumb)", () => {
     }
   });
 
+  it("las fotos del menú tienen texto alternativo y dimensiones", () => {
+    for (const item of items) {
+      if (!item.image) continue;
+      expect(item.image.alt.trim().length).toBeGreaterThan(0);
+      expect(item.image.width).toBeGreaterThan(0);
+      expect(item.image.height).toBeGreaterThan(0);
+    }
+  });
+
   it("los destacados apuntan a platillos que existen", () => {
     const ids = new Set(items.map((item) => item.id));
     for (const id of site.featured.itemIds) {

@@ -107,3 +107,31 @@
   color: var(--color-muted);
   font-size: var(--text-sm);
 }
+
+/* Platillos con foto: miniatura a la izquierda y texto a la derecha */
+.withImage {
+  display: grid;
+  grid-template-columns: 6rem 1fr;
+  gap: var(--space-4);
+  align-items: start;
+}
+
+@media (min-width: 48em) {
+  .withImage {
+    grid-template-columns: 7.5rem 1fr;
+  }
+}
+
+.photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  background: var(--color-border);
+}
+
+.body {
+  min-width: 0;
+}

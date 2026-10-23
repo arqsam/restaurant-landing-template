@@ -16,6 +16,17 @@ export type Weekday = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
 /** Hora en formato 24 h "HH:mm", por ejemplo "09:30". */
 export type Time = string;
 
+/** Foto cuadrada de un platillo (se muestra como miniatura). */
+export interface MenuImage {
+  src: string;
+  /** Variantes para pantallas de alta densidad, p. ej. "/a-240.webp 240w, /a-480.webp 480w". */
+  srcSet?: string;
+  width: number;
+  height: number;
+  /** Describe lo que se ve en la foto; no repite el nombre del platillo. */
+  alt: string;
+}
+
 export interface MenuItem {
   id: string;
   name: string;
@@ -24,7 +35,7 @@ export interface MenuItem {
   price: number;
   /** true: el precio es "desde" (p. ej. pasteles que se arman a medida). */
   priceFrom?: boolean;
-  image?: string;
+  image?: MenuImage;
   tags?: DietTag[];
 }
 

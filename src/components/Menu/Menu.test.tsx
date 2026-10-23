@@ -56,6 +56,53 @@ describe("Menu", () => {
     expect(screen.getByText("$75")).toBeInTheDocument();
   });
 
+  it("muestra la foto del platillo con texto alternativo, dimensiones y carga diferida", () => {
+    render(
+      <Menu
+        categories={[
+          {
+            id: "x",
+            name: "Cat",
+            items: [
+              {
+                id: "a",
+                name: "Pan",
+                description: "d",
+                price: 50,
+                image: {
+                  src: "/images/menu/a-480.webp",
+                  width: 480,
+                  height: 480,
+                  alt: "Pan con semillas",
+                },
+              },
+            ],
+          },
+        ]}
+      />,
+    );
+    const photo = screen.getByRole("img", { name: "Pan con semillas" });
+    expect(photo).toHaveAttribute("src", "/images/menu/a-480.webp");
+    expect(photo).toHaveAttribute("width", "480");
+    expect(photo).toHaveAttribute("height", "480");
+    expect(photo).toHaveAttribute("loading", "lazy");
+  });
+
+  it("no muestra imagen en platillos que no la tienen", () => {
+    render(
+      <Menu
+        categories={[
+          {
+            id: "x",
+            name: "Cat",
+            items: [{ id: "a", name: "Pan", description: "d", price: 50 }],
+          },
+        ]}
+      />,
+    );
+    expect(screen.queryByRole("img")).toBeNull();
+  });
+
   it("muestra las etiquetas de dieta con texto legible", () => {
     render(
       <Menu
