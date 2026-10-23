@@ -95,6 +95,26 @@ describe("site config (Mallow & Crumb)", () => {
     }
   });
 
+  it("los encabezados de cómo pedir, galería y reseñas tienen texto y énfasis válido", () => {
+    for (const intro of [site.howToOrder, site.gallery, site.testimonials]) {
+      expect(intro.eyebrow.trim().length).toBeGreaterThan(0);
+      expect(intro.title.trim().length).toBeGreaterThan(0);
+      if (intro.titleEmphasis) expect(intro.title).toContain(intro.titleEmphasis);
+    }
+  });
+
+  it("las fotos de la galería tienen dimensiones y los pasos de pedido tienen texto", () => {
+    for (const image of site.gallery.images) {
+      expect(image.width).toBeGreaterThan(0);
+      expect(image.height).toBeGreaterThan(0);
+    }
+    expect(site.howToOrder.steps.length).toBeGreaterThanOrEqual(3);
+    for (const step of site.howToOrder.steps) {
+      expect(step.title.trim().length).toBeGreaterThan(0);
+      expect(step.description.trim().length).toBeGreaterThan(0);
+    }
+  });
+
   it("los destacados apuntan a platillos que existen", () => {
     const ids = new Set(items.map((item) => item.id));
     for (const id of site.featured.itemIds) {

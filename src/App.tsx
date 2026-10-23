@@ -1,9 +1,12 @@
 import { Catering } from "./components/Catering/Catering";
 import { Featured } from "./components/Featured/Featured";
+import { Gallery } from "./components/Gallery/Gallery";
 import { Header } from "./components/Header/Header";
 import { Hero } from "./components/Hero/Hero";
+import { HowToOrder } from "./components/HowToOrder/HowToOrder";
 import { Menu } from "./components/Menu/Menu";
 import { SectionHeading } from "./components/SectionHeading/SectionHeading";
+import { Testimonials } from "./components/Testimonials/Testimonials";
 import { WhatsAppButton } from "./components/WhatsAppButton/WhatsAppButton";
 import { site } from "./content/site";
 import { useBrandTheme } from "./hooks/useBrandTheme";
@@ -66,8 +69,6 @@ function App() {
           <Menu categories={site.menu} />
         </section>
 
-        {/* Marcadores temporales para probar la navegación; cada uno se
-            reemplaza por su sección real en los Issues siguientes. */}
         {site.sections.catering ? (
           <Catering
             id={SECTION_IDS.catering}
@@ -81,21 +82,38 @@ function App() {
           />
         ) : null}
 
-        {links
-          .filter(
-            (link) =>
-              link.id !== SECTION_IDS.menu && link.id !== SECTION_IDS.catering,
-          )
-          .map((link) => (
-          <section
-            key={link.id}
-            id={link.id}
-            className="container"
-            style={{ minHeight: "70vh" }}
-          >
-            <h2>{link.label}</h2>
-          </section>
-        ))}
+        <HowToOrder
+          id={SECTION_IDS.howToOrder}
+          intro={site.howToOrder}
+          steps={site.howToOrder.steps}
+          facts={buildHeroFacts(site.orders)}
+        />
+
+        {site.sections.gallery ? (
+          <Gallery
+            id={SECTION_IDS.gallery}
+            intro={site.gallery}
+            images={site.gallery.images}
+          />
+        ) : null}
+
+        {site.sections.testimonials ? (
+          <Testimonials
+            id={SECTION_IDS.testimonials}
+            intro={site.testimonials}
+            items={site.testimonials.items}
+          />
+        ) : null}
+
+        {/* Marcador temporal: se reemplaza por la sección real de Contacto
+            en los Issues siguientes. */}
+        <section
+          id={SECTION_IDS.contact}
+          className="container"
+          style={{ minHeight: "70vh" }}
+        >
+          <h2>Contacto</h2>
+        </section>
       </main>
 
       <WhatsAppButton href={whatsappUrl} label="Escríbenos por WhatsApp" />

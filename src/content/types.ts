@@ -115,6 +115,10 @@ export interface HowToOrderStep {
 
 export interface GalleryImage {
   src: string;
+  /** Variantes para pantallas de alta densidad, p. ej. "/a-480.webp 480w, /a-960.webp 960w". */
+  srcSet?: string;
+  width: number;
+  height: number;
   alt: string;
 }
 
@@ -199,9 +203,9 @@ export interface SiteConfig {
   packages: CateringPackage[];
   /** Bebidas que se ofrecen como complemento de los paquetes (opcional). */
   beverages?: MenuCategory;
-  howToOrder: { title: string; steps: HowToOrderStep[] };
-  gallery: { title: string; images: GalleryImage[] };
-  testimonials: { title: string; items: Testimonial[] };
+  howToOrder: SectionIntro & { steps: HowToOrderStep[] };
+  gallery: SectionIntro & { images: GalleryImage[] };
+  testimonials: SectionIntro & { items: Testimonial[] };
   faq: { title: string; items: FaqItem[] };
   hours: Hours;
   orders: {

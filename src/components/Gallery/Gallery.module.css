@@ -1,0 +1,44 @@
+.grid {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 40em) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 64em) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-5);
+  }
+}
+
+.item {
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--color-border);
+}
+
+.photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .photo {
+    transition: transform 0.4s ease;
+  }
+
+  .item:hover .photo {
+    transform: scale(1.03);
+  }
+}

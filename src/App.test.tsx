@@ -50,6 +50,24 @@ describe("App", () => {
     }
   });
 
+  it("muestra cómo pedir, galería y reseñas", () => {
+    render(<App />);
+    for (const title of [
+      site.howToOrder.title,
+      site.gallery.title,
+      site.testimonials.title,
+    ]) {
+      expect(
+        screen.getByRole("heading", { level: 2, name: title }),
+      ).toBeInTheDocument();
+    }
+    for (const step of site.howToOrder.steps) {
+      expect(
+        screen.getByRole("heading", { level: 3, name: step.title }),
+      ).toBeInTheDocument();
+    }
+  });
+
   it("incluye el botón flotante de WhatsApp con el mismo enlace", () => {
     render(<App />);
     expect(
