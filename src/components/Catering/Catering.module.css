@@ -1,0 +1,160 @@
+/* Banda oscura a todo el ancho; alterna con las secciones claras */
+.band {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.packages {
+  display: grid;
+  gap: var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 48em) {
+  .packages {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-6);
+  border: 1px solid color-mix(in srgb, var(--color-on-primary) 28%, transparent);
+  border-radius: var(--radius-lg);
+}
+
+.name {
+  color: inherit;
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.meta {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-sm);
+  opacity: 0.9;
+}
+
+.description {
+  margin: 0 0 var(--space-4);
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
+.includes {
+  flex: 1;
+  margin: 0 0 var(--space-5);
+  padding: 0;
+  list-style: none;
+}
+
+.includes li {
+  padding: var(--space-2) 0;
+  border-top: 1px solid color-mix(in srgb, var(--color-on-primary) 18%, transparent);
+  font-size: var(--text-sm);
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-pill);
+  background: var(--color-on-primary);
+  color: var(--color-primary);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.cta:hover {
+  filter: brightness(0.92);
+}
+
+/* Bebidas */
+.beverages {
+  max-width: 56rem;
+  margin: var(--space-9) auto 0;
+}
+
+.beveragesTitle {
+  color: inherit;
+  margin: 0 0 var(--space-5);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-on-primary) 28%, transparent);
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.drinks {
+  display: grid;
+  gap: var(--space-5) var(--space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 48em) {
+  .drinks {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.drinkRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.drinkName {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 400;
+}
+
+.leader {
+  flex: 1;
+  min-width: var(--space-4);
+  border-bottom: 1px dotted color-mix(in srgb, var(--color-on-primary) 60%, transparent);
+  transform: translateY(-0.25em);
+}
+
+.drinkPrice {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.drinkDescription {
+  margin: var(--space-2) 0 0;
+  line-height: 1.5;
+  opacity: 0.85;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tags li {
+  padding: 0.125rem var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--color-on-primary) 40%, transparent);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
+}
