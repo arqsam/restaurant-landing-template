@@ -15,6 +15,13 @@ export const site: SiteConfig = {
       "Pasteles personalizados, postres de vitrina y mesas de postres para tus eventos. Pide por WhatsApp o cotiza en línea.",
   },
   nav: { menuLabel: "Pastelería" },
+  menuIntro: {
+    eyebrow: "Nuestra carta",
+    title: "Hecho a mano, cada día",
+    titleEmphasis: "a mano",
+    subtitle:
+      "Pasteles por encargo, postres de vitrina y panadería. También armamos pedidos grandes de postres para tus eventos.",
+  },
   sections: {
     featured: true,
     customizer: true,
@@ -40,6 +47,34 @@ export const site: SiteConfig = {
     ctaLabel: "Pedir por WhatsApp",
   },
   menu: [
+    {
+      id: "pasteles",
+      name: "Pasteles y tartas por encargo",
+      items: [
+        {
+          id: "pastel-vainilla-frutos-rojos",
+          name: "Pastel de vainilla y frutos rojos",
+          description:
+            "Bizcocho de vainilla, crema ligera y mermelada de frutos rojos.",
+          price: 480,
+          priceFrom: true,
+        },
+        {
+          id: "pastel-chocolate-ganache",
+          name: "Pastel de chocolate con ganache",
+          description: "Bizcocho húmedo de chocolate cubierto de ganache semiamargo.",
+          price: 520,
+          priceFrom: true,
+        },
+        {
+          id: "pastel-red-velvet",
+          name: "Red velvet con queso crema",
+          description: "Clásico red velvet con betún de queso crema y vainilla.",
+          price: 540,
+          priceFrom: true,
+        },
+      ],
+    },
     {
       id: "vitrina",
       name: "Postres de vitrina",
@@ -102,38 +137,6 @@ export const site: SiteConfig = {
           description: "Con chispas de chocolate y sal de mar.",
           price: 50,
           tags: ["vegano", "sin-lactosa"],
-        },
-      ],
-    },
-    {
-      id: "bebidas",
-      name: "Café y bebidas",
-      items: [
-        {
-          id: "americano",
-          name: "Café americano",
-          description: "Café de especialidad, tostado medio.",
-          price: 45,
-          tags: ["vegano", "sin-gluten"],
-        },
-        {
-          id: "latte",
-          name: "Latte",
-          description: "Espresso doble con leche texturizada.",
-          price: 60,
-        },
-        {
-          id: "chocolate-caliente",
-          name: "Chocolate caliente",
-          description: "Chocolate semiamargo con un toque de canela.",
-          price: 65,
-        },
-        {
-          id: "limonada-lavanda",
-          name: "Limonada de lavanda",
-          description: "Fría, con lavanda y menta.",
-          price: 55,
-          tags: ["vegano", "sin-gluten", "sin-lactosa"],
         },
       ],
     },
