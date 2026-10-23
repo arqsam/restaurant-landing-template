@@ -26,11 +26,15 @@ export function splitEmphasis(
 export function buildHeroFacts(orders: {
   minLeadDays: number;
   depositPercent: number;
+  readyLabel?: string;
+  madeToOrderLabel?: string;
 }): string[] {
   const facts: string[] = [];
+  if (orders.readyLabel) facts.push(orders.readyLabel);
   if (orders.minLeadDays > 0) {
     const days = orders.minLeadDays === 1 ? "día" : "días";
-    facts.push(`Pedidos con ${orders.minLeadDays} ${days} de anticipación`);
+    const subject = orders.madeToOrderLabel ?? "Pedidos";
+    facts.push(`${subject} con ${orders.minLeadDays} ${days} de anticipación`);
   }
   facts.push(`Anticipo del ${orders.depositPercent} %`);
   return facts;

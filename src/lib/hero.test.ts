@@ -27,6 +27,21 @@ describe("buildHeroFacts", () => {
     ]);
   });
 
+  it("distingue lo que se vende hoy de lo que se hace por encargo", () => {
+    expect(
+      buildHeroFacts({
+        minLeadDays: 2,
+        depositPercent: 50,
+        readyLabel: "Postres de vitrina disponibles hoy",
+        madeToOrderLabel: "Pasteles por encargo",
+      }),
+    ).toEqual([
+      "Postres de vitrina disponibles hoy",
+      "Pasteles por encargo con 2 días de anticipación",
+      "Anticipo del 50 %",
+    ]);
+  });
+
   it("usa el singular con 1 día", () => {
     expect(buildHeroFacts({ minLeadDays: 1, depositPercent: 30 })[0]).toBe(
       "Pedidos con 1 día de anticipación",

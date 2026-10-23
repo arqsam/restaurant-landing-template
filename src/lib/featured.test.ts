@@ -7,12 +7,13 @@ const menu: MenuCategory[] = [
   {
     id: "a",
     name: "A",
+    availability: "vitrina",
     items: [
       { id: "uno", name: "Uno", description: "d", price: 10 },
       { id: "dos", name: "Dos", description: "d", price: 20 },
     ],
   },
-  { id: "b", name: "B", items: [{ id: "tres", name: "Tres", description: "d", price: 30 }] },
+  { id: "b", name: "B", availability: "vitrina", items: [{ id: "tres", name: "Tres", description: "d", price: 30 }] },
 ];
 
 describe("resolveFeatured", () => {
