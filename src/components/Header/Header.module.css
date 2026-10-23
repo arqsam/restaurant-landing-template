@@ -16,7 +16,7 @@
 
 .bar,
 .nav {
-  --glass-bg: color-mix(in srgb, var(--color-bg) 62%, transparent);
+  --glass-bg: color-mix(in srgb, var(--color-bg) 82%, transparent);
 }
 
 .bar {
@@ -107,6 +107,12 @@
 }
 
 @media (min-width: 48em) {
+  /* Escritorio: píldoras más translúcidas (el vidrio deja ver más la foto) */
+  .bar,
+  .nav {
+    --glass-bg: color-mix(in srgb, var(--color-bg) 70%, transparent);
+  }
+
   .bar {
     padding: 0;
     border: 0;
@@ -117,6 +123,18 @@
     box-shadow: none;
   }
 
+  /* La marca también va en una píldora de vidrio para leerse sobre secciones oscuras */
+  .brand {
+    padding: var(--space-2) var(--space-5);
+    border: 1px solid color-mix(in srgb, #fff 60%, transparent);
+    border-radius: var(--radius-pill);
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    backdrop-filter: blur(16px) saturate(1.4);
+    box-shadow: 0 8px 30px rgb(59 42 36 / 0.1);
+    pointer-events: auto;
+  }
+
   .toggle {
     display: none;
   }
@@ -124,6 +142,9 @@
   .nav,
   .nav[data-open="false"] {
     position: static;
+    border: 1px solid color-mix(in srgb, #fff 60%, transparent);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    backdrop-filter: blur(16px) saturate(1.4);
     display: block;
     padding: var(--space-2) var(--space-5);
     border-radius: var(--radius-pill);
@@ -142,6 +163,7 @@
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   @media (min-width: 48em) {
+    .brand,
     .nav,
     .nav[data-open="false"] {
       background: var(--color-bg);
