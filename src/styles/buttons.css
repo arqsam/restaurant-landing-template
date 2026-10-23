@@ -1,0 +1,10 @@
+.button--secondary {
+  background: transparent;
+  color: var(--color-primary);
+  box-shadow: inset 0 0 0 2px var(--color-primary);
+}
+
+.button--secondary:hover {
+  filter: none;
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+}
