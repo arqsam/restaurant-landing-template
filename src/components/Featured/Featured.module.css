@@ -1,0 +1,57 @@
+.section {
+  padding-bottom: 0;
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 48em) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.card {
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: var(--color-border);
+}
+
+.body {
+  padding: var(--space-5);
+}
+
+.name {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+.description {
+  margin: 0 0 var(--space-4);
+  color: var(--color-muted);
+  line-height: 1.5;
+}
+
+.price {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}

@@ -15,6 +15,13 @@ export const site: SiteConfig = {
       "Pasteles personalizados, postres de vitrina y mesas de postres para tus eventos. Pide por WhatsApp o cotiza en línea.",
   },
   nav: { menuLabel: "Pastelería" },
+  cateringIntro: {
+    eyebrow: "Eventos y mesas",
+    title: "Tu celebración, endulzada",
+    titleEmphasis: "endulzada",
+    subtitle:
+      "Paquetes por persona para reuniones, bodas y festejos. Cotizamos según tu fecha y el número de invitados.",
+  },
   menuIntro: {
     eyebrow: "Nuestra carta",
     title: "Hecho a mano, cada día",
@@ -57,11 +64,12 @@ export const site: SiteConfig = {
           description:
             "Bizcocho de vainilla, crema ligera y mermelada de frutos rojos.",
           image: {
-            src: "/images/hero-720.webp",
-            srcSet: "/images/hero-1080.webp, /images/hero-1440.webp",
+            src: "/images/menu/pastel-vainilla-frutos-rojos-480.webp",
+            srcSet:
+              "/images/menu/pastel-vainilla-frutos-rojos-240.webp 240w, /images/menu/pastel-vainilla-frutos-rojos-480.webp 480w",
             width: 480,
             height: 480,
-            alt: "Pastel de mousse de chocolate con cobertura de ganache y trufas espolvoreadas de cacao",
+            alt: "Tarta de frutos rojos con fresas, moras y arándanos sobre un plato blanco",
           },
           price: 480,
           priceFrom: true,
@@ -69,8 +77,7 @@ export const site: SiteConfig = {
         {
           id: "pastel-chocolate-ganache",
           name: "Pastel de chocolate con ganache",
-          description:
-            "Bizcocho húmedo de chocolate cubierto de ganache semiamargo.",
+          description: "Bizcocho húmedo de chocolate cubierto de ganache semiamargo.",
           image: {
             src: "/images/menu/pastel-chocolate-ganache-480.webp",
             srcSet:
@@ -85,8 +92,7 @@ export const site: SiteConfig = {
         {
           id: "pastel-red-velvet",
           name: "Red velvet con queso crema",
-          description:
-            "Clásico red velvet con betún de queso crema y vainilla.",
+          description: "Clásico red velvet con betún de queso crema y vainilla.",
           image: {
             src: "/images/menu/pastel-red-velvet-480.webp",
             srcSet:
@@ -151,8 +157,7 @@ export const site: SiteConfig = {
         {
           id: "cheesecake-frutos-rojos",
           name: "Cheesecake de frutos rojos",
-          description:
-            "Cremoso, sobre base de galleta y salsa de frutos rojos.",
+          description: "Cremoso, sobre base de galleta y salsa de frutos rojos.",
           image: {
             src: "/images/menu/cheesecake-frutos-rojos-480.webp",
             srcSet:
@@ -224,29 +229,18 @@ export const site: SiteConfig = {
     },
   ],
   featured: {
+    eyebrow: "Lo más pedido",
     title: "Favoritos de la casa",
-    itemIds: [
-      "mallow-tostado",
-      "cheesecake-frutos-rojos",
-      "croissant-almendra",
-    ],
+    titleEmphasis: "de la casa",
+    subtitle: "Tres antojos que no pueden faltar en tu mesa.",
+    itemIds: ["mallow-tostado", "cheesecake-frutos-rojos", "croissant-almendra"],
   },
   customizer: {
     title: "Arma tu pastel",
     sizes: [
       { id: "mini", label: "Mini (6 porciones)", servings: 6, price: 480 },
-      {
-        id: "mediano",
-        label: "Mediano (12 porciones)",
-        servings: 12,
-        price: 780,
-      },
-      {
-        id: "grande",
-        label: "Grande (20 porciones)",
-        servings: 20,
-        price: 1150,
-      },
+      { id: "mediano", label: "Mediano (12 porciones)", servings: 12, price: 780 },
+      { id: "grande", label: "Grande (20 porciones)", servings: 20, price: 1150 },
     ],
     flavors: [
       { id: "vainilla", label: "Vainilla" },
@@ -267,16 +261,8 @@ export const site: SiteConfig = {
         description: "Acabado liso con detalles sutiles.",
         palettes: [
           { id: "crema", label: "Crema", colors: ["#f5ecdc", "#e8d5b5"] },
-          {
-            id: "rosa-pastel",
-            label: "Rosa pastel",
-            colors: ["#f6d5d9", "#fbeaec"],
-          },
-          {
-            id: "verde-salvia",
-            label: "Verde salvia",
-            colors: ["#b9c8b0", "#e4ecde"],
-          },
+          { id: "rosa-pastel", label: "Rosa pastel", colors: ["#f6d5d9", "#fbeaec"] },
+          { id: "verde-salvia", label: "Verde salvia", colors: ["#b9c8b0", "#e4ecde"] },
         ],
       },
       {
@@ -285,16 +271,8 @@ export const site: SiteConfig = {
         description: "Flores de crema o comestibles sobre la superficie.",
         extraPrice: 120,
         palettes: [
-          {
-            id: "primavera",
-            label: "Primavera",
-            colors: ["#f4b6c2", "#fff1c9", "#b9d7a5"],
-          },
-          {
-            id: "lavanda",
-            label: "Lavanda",
-            colors: ["#cdbbe8", "#efe6fa", "#ffffff"],
-          },
+          { id: "primavera", label: "Primavera", colors: ["#f4b6c2", "#fff1c9", "#b9d7a5"] },
+          { id: "lavanda", label: "Lavanda", colors: ["#cdbbe8", "#efe6fa", "#ffffff"] },
         ],
       },
       {
@@ -303,11 +281,7 @@ export const site: SiteConfig = {
         description: "Cobertura que escurre por los lados, con toppings.",
         extraPrice: 90,
         palettes: [
-          {
-            id: "chocolate",
-            label: "Chocolate",
-            colors: ["#4a2c20", "#f5ecdc"],
-          },
+          { id: "chocolate", label: "Chocolate", colors: ["#4a2c20", "#f5ecdc"] },
           { id: "caramelo", label: "Caramelo", colors: ["#c7843d", "#fff1d6"] },
         ],
       },
@@ -317,11 +291,7 @@ export const site: SiteConfig = {
         description: "Diseño a tu medida a partir de un tema que elijas.",
         extraPrice: 150,
         palettes: [
-          {
-            id: "cumple-infantil",
-            label: "Cumpleaños infantil",
-            colors: ["#ffd166", "#ef476f", "#06d6a0"],
-          },
+          { id: "cumple-infantil", label: "Cumpleaños infantil", colors: ["#ffd166", "#ef476f", "#06d6a0"] },
           { id: "elegante", label: "Elegante", colors: ["#1f1b1a", "#d4af37"] },
         ],
       },
@@ -335,11 +305,7 @@ export const site: SiteConfig = {
       description: "Selección de postres individuales para tu evento.",
       minPeople: 20,
       pricePerPerson: 95,
-      includes: [
-        "3 postres por persona",
-        "Montaje en mesa",
-        "Letrero personalizado",
-      ],
+      includes: ["3 postres por persona", "Montaje en mesa", "Letrero personalizado"],
     },
     {
       id: "coffee-break",
@@ -355,79 +321,67 @@ export const site: SiteConfig = {
       description: "Brunch dulce y salado para celebraciones.",
       minPeople: 15,
       pricePerPerson: 220,
-      includes: [
-        "Bebidas",
-        "Panes y croissants",
-        "Postre individual",
-        "Fruta de temporada",
-      ],
+      includes: ["Bebidas", "Panes y croissants", "Postre individual", "Fruta de temporada"],
     },
   ],
+  beverages: {
+    id: "bebidas",
+    name: "Bebidas para tu evento · precio por servicio",
+    items: [
+      {
+        id: "americano",
+        name: "Café americano",
+        description: "Café de especialidad, tostado medio.",
+        price: 45,
+        tags: ["vegano", "sin-gluten"],
+      },
+      {
+        id: "latte",
+        name: "Latte",
+        description: "Espresso doble con leche texturizada.",
+        price: 60,
+      },
+      {
+        id: "chocolate-caliente",
+        name: "Chocolate caliente",
+        description: "Chocolate semiamargo con un toque de canela.",
+        price: 65,
+      },
+      {
+        id: "limonada-lavanda",
+        name: "Limonada de lavanda",
+        description: "Fría, con lavanda y menta.",
+        price: 55,
+        tags: ["vegano", "sin-gluten", "sin-lactosa"],
+      },
+    ],
+  },
   howToOrder: {
     title: "Cómo pedir",
     steps: [
-      {
-        title: "Elige",
-        description: "Revisa el menú o arma tu pastel con el personalizador.",
-      },
-      {
-        title: "Cotiza",
-        description: "Envíanos tu solicitud por el formulario o por WhatsApp.",
-      },
-      {
-        title: "Confirma con anticipo",
-        description: "Reservas tu fecha con el 50 % de anticipo.",
-      },
-      {
-        title: "Recibe",
-        description: "Recoge tu pedido o te lo entregamos el día acordado.",
-      },
+      { title: "Elige", description: "Revisa el menú o arma tu pastel con el personalizador." },
+      { title: "Cotiza", description: "Envíanos tu solicitud por el formulario o por WhatsApp." },
+      { title: "Confirma con anticipo", description: "Reservas tu fecha con el 50 % de anticipo." },
+      { title: "Recibe", description: "Recoge tu pedido o te lo entregamos el día acordado." },
     ],
   },
   gallery: {
     title: "Galería",
     images: [
-      {
-        src: "/images/gallery-1.webp",
-        alt: "Pastel minimalista de vainilla con flores comestibles",
-      },
-      {
-        src: "/images/gallery-2.webp",
-        alt: "Mesa de postres con cheesecakes y tartas",
-      },
-      {
-        src: "/images/gallery-3.webp",
-        alt: "Croissants de almendra recién horneados",
-      },
+      { src: "/images/gallery-1.webp", alt: "Pastel minimalista de vainilla con flores comestibles" },
+      { src: "/images/gallery-2.webp", alt: "Mesa de postres con cheesecakes y tartas" },
+      { src: "/images/gallery-3.webp", alt: "Croissants de almendra recién horneados" },
       { src: "/images/gallery-4.webp", alt: "Pastel con drip de chocolate" },
-      {
-        src: "/images/gallery-5.webp",
-        alt: "Galletas decoradas para un cumpleaños",
-      },
-      {
-        src: "/images/gallery-6.webp",
-        alt: "Mallow tostado sobre base de galleta",
-      },
+      { src: "/images/gallery-5.webp", alt: "Galletas decoradas para un cumpleaños" },
+      { src: "/images/gallery-6.webp", alt: "Mallow tostado sobre base de galleta" },
     ],
   },
   testimonials: {
     title: "Lo que dicen nuestros clientes",
     items: [
-      {
-        name: "Ana M.",
-        text: "El pastel quedó idéntico a lo que imaginaba y estaba delicioso.",
-        isSample: true,
-      },
-      {
-        name: "Carlos R.",
-        text: "La mesa de postres fue el éxito de la fiesta.",
-        isSample: true,
-      },
-      {
-        name: "Lucía P.",
-        text: "Pedir por WhatsApp fue muy fácil y entregaron a tiempo.",
-        isSample: true,
-      },
+      { name: "Ana M.", text: "El pastel quedó idéntico a lo que imaginaba y estaba delicioso.", isSample: true },
+      { name: "Carlos R.", text: "La mesa de postres fue el éxito de la fiesta.", isSample: true },
+      { name: "Lucía P.", text: "Pedir por WhatsApp fue muy fácil y entregaron a tiempo.", isSample: true },
     ],
   },
   faq: {
@@ -435,28 +389,23 @@ export const site: SiteConfig = {
     items: [
       {
         question: "¿Con cuánta anticipación debo hacer mi pedido?",
-        answer:
-          "Pasteles personalizados con mínimo 2 días de anticipación. Para eventos y catering, mientras antes mejor.",
+        answer: "Pasteles personalizados con mínimo 2 días de anticipación. Para eventos y catering, mientras antes mejor.",
       },
       {
         question: "¿Cómo funciona el anticipo?",
-        answer:
-          "Para reservar tu fecha se requiere el 50 % del total. El resto se paga al recibir tu pedido. Los datos de pago se envían por WhatsApp al confirmar.",
+        answer: "Para reservar tu fecha se requiere el 50 % del total. El resto se paga al recibir tu pedido. Los datos de pago se envían por WhatsApp al confirmar.",
       },
       {
         question: "¿Puedo cambiar el diseño después de confirmar?",
-        answer:
-          "Sí, hasta 48 horas antes de la entrega, sujeto a disponibilidad.",
+        answer: "Sí, hasta 48 horas antes de la entrega, sujeto a disponibilidad.",
       },
       {
         question: "¿Manejan opciones para alergias?",
-        answer:
-          "Contamos con opciones sin gluten, veganas y sin lactosa. Cuéntanos tus alergias al cotizar; no garantizamos ausencia de trazas de nueces.",
+        answer: "Contamos con opciones sin gluten, veganas y sin lactosa. Cuéntanos tus alergias al cotizar; no garantizamos ausencia de trazas de nueces.",
       },
       {
         question: "¿Hacen entregas?",
-        answer:
-          "Sí, con costo según la zona. También puedes recoger tu pedido en el local.",
+        answer: "Sí, con costo según la zona. También puedes recoger tu pedido en el local.",
       },
     ],
   },
@@ -477,14 +426,12 @@ export const site: SiteConfig = {
     defaultMessage: "Hola, me gustaría hacer un pedido.",
     minLeadDays: 2,
     depositPercent: 50,
-    paymentNote:
-      "Te enviamos los datos de pago por WhatsApp al confirmar tu pedido.",
+    paymentNote: "Te enviamos los datos de pago por WhatsApp al confirmar tu pedido.",
   },
   contact: {
     email: "hola@mallowandcrumb.example",
     address: "Calle Ejemplo 123, Col. Centro, Ciudad de México",
-    mapsUrl:
-      "https://www.google.com/maps/search/?api=1&query=Calle+Ejemplo+123+Ciudad+de+Mexico",
+    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Calle+Ejemplo+123+Ciudad+de+Mexico",
     formProvider: "web3forms",
     formKey: "REEMPLAZA-CON-TU-LLAVE-PUBLICA",
   },

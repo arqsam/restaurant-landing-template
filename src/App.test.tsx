@@ -35,6 +35,21 @@ describe("App", () => {
     }
   });
 
+  it("muestra los favoritos antes del menú y los paquetes de catering", () => {
+    render(<App />);
+    expect(
+      screen.getByRole("heading", { level: 2, name: site.featured.title }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { level: 2, name: site.cateringIntro.title }),
+    ).toBeInTheDocument();
+    for (const pkg of site.packages) {
+      expect(
+        screen.getByRole("heading", { level: 3, name: pkg.name }),
+      ).toBeInTheDocument();
+    }
+  });
+
   it("incluye el botón flotante de WhatsApp con el mismo enlace", () => {
     render(<App />);
     expect(

@@ -67,6 +67,34 @@ describe("site config (Mallow & Crumb)", () => {
     }
   });
 
+  it("los encabezados de destacados y catering tienen texto y énfasis válido", () => {
+    for (const intro of [site.featured, site.cateringIntro]) {
+      expect(intro.eyebrow.trim().length).toBeGreaterThan(0);
+      expect(intro.title.trim().length).toBeGreaterThan(0);
+      if (intro.titleEmphasis) expect(intro.title).toContain(intro.titleEmphasis);
+    }
+  });
+
+  it("los paquetes tienen ids únicos, descripción y al menos un elemento incluido", () => {
+    expect(unique(site.packages.map((p) => p.id))).toBe(true);
+    for (const pkg of site.packages) {
+      expect(pkg.description.trim().length).toBeGreaterThan(0);
+      expect(pkg.includes.length).toBeGreaterThan(0);
+      if (pkg.pricePerPerson !== undefined) {
+        expect(Number.isInteger(pkg.pricePerPerson)).toBe(true);
+        expect(pkg.pricePerPerson).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it("las bebidas de catering no repiten ids del menú y tienen precios enteros", () => {
+    const menuIds = new Set(items.map((item) => item.id));
+    for (const drink of site.beverages?.items ?? []) {
+      expect(menuIds.has(drink.id)).toBe(false);
+      expect(Number.isInteger(drink.price)).toBe(true);
+    }
+  });
+
   it("los destacados apuntan a platillos que existen", () => {
     const ids = new Set(items.map((item) => item.id));
     for (const id of site.featured.itemIds) {
