@@ -10,6 +10,7 @@ export const SECTION_IDS = {
   featured: "destacados",
   menu: "menu",
   customizer: "personalizar",
+  howToOrder: "como-pedir",
   catering: "catering",
   gallery: "galeria",
   testimonials: "resenas",
