@@ -1,5 +1,6 @@
 import { Header } from "./components/Header/Header";
 import { Hero } from "./components/Hero/Hero";
+import { WhatsAppButton } from "./components/WhatsAppButton/WhatsAppButton";
 import { site } from "./content/site";
 import { useBrandTheme } from "./hooks/useBrandTheme";
 import { buildHeroFacts } from "./lib/hero";
@@ -10,6 +11,10 @@ function App() {
   useBrandTheme(site.brand.colors);
   const links = buildNavLinks(site);
   const menuLink = links.find((link) => link.id === SECTION_IDS.menu);
+  const whatsappUrl = buildWhatsAppUrl(
+    site.orders.whatsapp,
+    site.orders.defaultMessage,
+  );
 
   return (
     <>
@@ -27,10 +32,7 @@ function App() {
           image={site.hero.image}
           facts={buildHeroFacts(site.orders)}
           ctaLabel={site.hero.ctaLabel}
-          ctaHref={buildWhatsAppUrl(
-            site.orders.whatsapp,
-            site.orders.defaultMessage,
-          )}
+          ctaHref={whatsappUrl}
           secondaryLabel={`Ver ${(menuLink?.label ?? "menú").toLowerCase()}`}
           secondaryHref={`#${SECTION_IDS.menu}`}
         />
@@ -48,6 +50,8 @@ function App() {
           </section>
         ))}
       </main>
+
+      <WhatsAppButton href={whatsappUrl} label="Escríbenos por WhatsApp" />
     </>
   );
 }
