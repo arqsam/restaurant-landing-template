@@ -1,11 +1,15 @@
 import { Header } from "./components/Header/Header";
+import { Hero } from "./components/Hero/Hero";
 import { site } from "./content/site";
 import { useBrandTheme } from "./hooks/useBrandTheme";
+import { buildHeroFacts } from "./lib/hero";
 import { SECTION_IDS, buildNavLinks } from "./lib/nav";
+import { buildWhatsAppUrl } from "./lib/whatsapp";
 
 function App() {
   useBrandTheme(site.brand.colors);
   const links = buildNavLinks(site);
+  const menuLink = links.find((link) => link.id === SECTION_IDS.menu);
 
   return (
     <>
@@ -15,14 +19,21 @@ function App() {
       <Header brandName={site.brand.name} links={links} />
 
       <main id="contenido">
-        <section id={SECTION_IDS.hero} className="container">
-          <h1>{site.brand.name}</h1>
-          <p>{site.hero.subtitle}</p>
-          {/* Marcador: el CTA real de WhatsApp llega en los Issues T06/T07 */}
-          <button type="button" className="button">
-            {site.hero.ctaLabel}
-          </button>
-        </section>
+        <Hero
+          tagline={site.brand.tagline}
+          title={site.hero.title}
+          subtitle={site.hero.subtitle}
+          titleEmphasis={site.hero.titleEmphasis}
+          image={site.hero.image}
+          facts={buildHeroFacts(site.orders)}
+          ctaLabel={site.hero.ctaLabel}
+          ctaHref={buildWhatsAppUrl(
+            site.orders.whatsapp,
+            site.orders.defaultMessage,
+          )}
+          secondaryLabel={`Ver ${(menuLink?.label ?? "menú").toLowerCase()}`}
+          secondaryHref={`#${SECTION_IDS.menu}`}
+        />
 
         {/* Marcadores temporales para probar la navegación; cada uno se
             reemplaza por su sección real en los Issues siguientes. */}
