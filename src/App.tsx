@@ -1,5 +1,7 @@
 import { Header } from "./components/Header/Header";
 import { Hero } from "./components/Hero/Hero";
+import { Menu } from "./components/Menu/Menu";
+import { SectionHeading } from "./components/SectionHeading/SectionHeading";
 import { WhatsAppButton } from "./components/WhatsAppButton/WhatsAppButton";
 import { site } from "./content/site";
 import { useBrandTheme } from "./hooks/useBrandTheme";
@@ -37,9 +39,26 @@ function App() {
           secondaryHref={`#${SECTION_IDS.menu}`}
         />
 
+        <section
+          id={SECTION_IDS.menu}
+          className="container section"
+          aria-labelledby="menu-titulo"
+        >
+          <SectionHeading
+            id="menu-titulo"
+            eyebrow={site.menuIntro.eyebrow}
+            title={site.menuIntro.title}
+            titleEmphasis={site.menuIntro.titleEmphasis}
+            subtitle={site.menuIntro.subtitle}
+          />
+          <Menu categories={site.menu} />
+        </section>
+
         {/* Marcadores temporales para probar la navegación; cada uno se
             reemplaza por su sección real en los Issues siguientes. */}
-        {links.map((link) => (
+        {links
+          .filter((link) => link.id !== SECTION_IDS.menu)
+          .map((link) => (
           <section
             key={link.id}
             id={link.id}
