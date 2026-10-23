@@ -7,6 +7,7 @@ import type { SiteConfig } from "../content/types";
  */
 export const SECTION_IDS = {
   hero: "inicio",
+  featured: "destacados",
   menu: "menu",
   customizer: "personalizar",
   catering: "catering",

@@ -173,6 +173,8 @@ export interface SiteConfig {
   };
   /** Encabezado editorial de la sección de menú o catálogo. */
   menuIntro: SectionIntro;
+  /** Encabezado editorial de la sección de catering o eventos. */
+  cateringIntro: SectionIntro;
   /** Activa o desactiva secciones opcionales. Hero, Contacto y Footer siempre se muestran. */
   sections: {
     featured: boolean;
@@ -191,9 +193,12 @@ export interface SiteConfig {
     ctaLabel: string;
   };
   menu: MenuCategory[];
-  featured: { title: string; itemIds: string[] };
+  /** Favoritos de la casa: encabezado editorial y ids de platillos del menú. */
+  featured: SectionIntro & { itemIds: string[] };
   customizer: Customizer;
   packages: CateringPackage[];
+  /** Bebidas que se ofrecen como complemento de los paquetes (opcional). */
+  beverages?: MenuCategory;
   howToOrder: { title: string; steps: HowToOrderStep[] };
   gallery: { title: string; images: GalleryImage[] };
   testimonials: { title: string; items: Testimonial[] };
