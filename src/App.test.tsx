@@ -23,6 +23,18 @@ describe("App", () => {
     );
   });
 
+  it("muestra la sección de menú con sus categorías y platillos", () => {
+    render(<App />);
+    expect(
+      screen.getByRole("heading", { level: 2, name: site.menuIntro.title }),
+    ).toBeInTheDocument();
+    for (const category of site.menu) {
+      expect(
+        screen.getByRole("heading", { level: 3, name: category.name }),
+      ).toBeInTheDocument();
+    }
+  });
+
   it("incluye el botón flotante de WhatsApp con el mismo enlace", () => {
     render(<App />);
     expect(

@@ -15,6 +15,13 @@ describe("site config (Mallow & Crumb)", () => {
     expect(site.nav.menuLabel.trim().length).toBeGreaterThan(0);
   });
 
+  it("el encabezado del menú tiene texto y su énfasis está dentro del título", () => {
+    const { eyebrow, title, titleEmphasis } = site.menuIntro;
+    expect(eyebrow.trim().length).toBeGreaterThan(0);
+    expect(title.trim().length).toBeGreaterThan(0);
+    if (titleEmphasis) expect(title).toContain(titleEmphasis);
+  });
+
   it("la imagen del hero tiene texto alternativo y dimensiones", () => {
     const { image } = site.hero;
     expect(image.alt.trim().length).toBeGreaterThan(0);
@@ -41,6 +48,13 @@ describe("site config (Mallow & Crumb)", () => {
     for (const item of items) {
       expect(Number.isInteger(item.price)).toBe(true);
       expect(item.price).toBeGreaterThan(0);
+    }
+  });
+
+  it("los precios \"desde\" no bajan del tamaño más económico del personalizador", () => {
+    const cheapest = Math.min(...site.customizer.sizes.map((size) => size.price));
+    for (const item of items.filter((i) => i.priceFrom)) {
+      expect(item.price).toBeGreaterThanOrEqual(cheapest);
     }
   });
 

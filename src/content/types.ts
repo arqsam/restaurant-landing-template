@@ -22,6 +22,8 @@ export interface MenuItem {
   description: string;
   /** Precio en pesos mexicanos (entero). */
   price: number;
+  /** true: el precio es "desde" (p. ej. pasteles que se arman a medida). */
+  priceFrom?: boolean;
   image?: string;
   tags?: DietTag[];
 }
@@ -131,6 +133,15 @@ export interface HeroImage {
 
 // --- Configuración completa ----------------------------------------------
 
+/** Encabezado de una sección: sobretítulo, título (con énfasis opcional) y subtítulo. */
+export interface SectionIntro {
+  eyebrow: string;
+  title: string;
+  /** Fragmento del título que se muestra en cursiva (debe estar dentro de `title`). */
+  titleEmphasis?: string;
+  subtitle?: string;
+}
+
 export interface SiteConfig {
   brand: {
     name: string;
@@ -149,6 +160,8 @@ export interface SiteConfig {
     /** Etiqueta del enlace al menú o catálogo: "Menú", "Pastelería", "Carta"... */
     menuLabel: string;
   };
+  /** Encabezado editorial de la sección de menú o catálogo. */
+  menuIntro: SectionIntro;
   /** Activa o desactiva secciones opcionales. Hero, Contacto y Footer siempre se muestran. */
   sections: {
     featured: boolean;
