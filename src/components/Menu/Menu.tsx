@@ -35,7 +35,24 @@ export function Menu({ categories }: MenuProps) {
             </h3>
             <ul className={styles.items}>
               {category.items.map((item) => (
-                <li key={item.id} className={styles.item}>
+                <li
+                  key={item.id}
+                  className={`${styles.item} ${item.image ? styles.withImage : ""}`}
+                >
+                  {item.image ? (
+                    <img
+                      className={styles.photo}
+                      src={item.image.src}
+                      srcSet={item.image.srcSet}
+                      sizes="(min-width: 48em) 7.5rem, 6rem"
+                      width={item.image.width}
+                      height={item.image.height}
+                      alt={item.image.alt}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : null}
+                  <div className={styles.body}>
                   <div className={styles.row}>
                     <h4 className={styles.name}>{item.name}</h4>
                     <span className={styles.leader} aria-hidden="true" />
@@ -52,6 +69,7 @@ export function Menu({ categories }: MenuProps) {
                       ))}
                     </ul>
                   ) : null}
+                  </div>
                 </li>
               ))}
             </ul>
