@@ -117,6 +117,18 @@ export interface FaqItem {
   answer: string;
 }
 
+export interface HeroImage {
+  src: string;
+  /** Variantes responsivas, p. ej. "/img-720.webp 720w, /img-1080.webp 1080w". */
+  srcSet?: string;
+  sizes?: string;
+  /** Dimensiones intrínsecas de `src` (evitan saltos de diseño). */
+  width: number;
+  height: number;
+  /** Texto alternativo (obligatorio por accesibilidad). */
+  alt: string;
+}
+
 // --- Configuración completa ----------------------------------------------
 
 export interface SiteConfig {
@@ -146,7 +158,14 @@ export interface SiteConfig {
     testimonials: boolean;
     faq: boolean;
   };
-  hero: { title: string; subtitle: string; image: string; ctaLabel: string };
+  hero: {
+    title: string;
+    /** Fragmento del título que se muestra en cursiva y color de acento (debe estar dentro de `title`). */
+    titleEmphasis?: string;
+    subtitle: string;
+    image: HeroImage;
+    ctaLabel: string;
+  };
   menu: MenuCategory[];
   featured: { title: string; itemIds: string[] };
   customizer: Customizer;

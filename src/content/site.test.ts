@@ -15,6 +15,18 @@ describe("site config (Mallow & Crumb)", () => {
     expect(site.nav.menuLabel.trim().length).toBeGreaterThan(0);
   });
 
+  it("la imagen del hero tiene texto alternativo y dimensiones", () => {
+    const { image } = site.hero;
+    expect(image.alt.trim().length).toBeGreaterThan(0);
+    expect(image.width).toBeGreaterThan(0);
+    expect(image.height).toBeGreaterThan(0);
+  });
+
+  it("el énfasis del título del hero es un fragmento del propio título", () => {
+    const { title, titleEmphasis } = site.hero;
+    if (titleEmphasis) expect(title).toContain(titleEmphasis);
+  });
+
   it("usa colores de marca en formato #RRGGBB", () => {
     expect(site.brand.colors.primary).toMatch(HEX);
     expect(site.brand.colors.accent).toMatch(HEX);
