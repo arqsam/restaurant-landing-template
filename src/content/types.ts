@@ -27,6 +27,15 @@ export interface MenuImage {
   alt: string;
 }
 
+export interface ItemOrderCopy {
+  /** Texto del botón del platillo: "Pedir hoy", "Encargar". */
+  label: string;
+  /** Rótulo de la categoría: "Disponible hoy", "Por encargo". */
+  badge: string;
+  /** Mensaje de WhatsApp; usa {item} para el nombre del platillo. */
+  message: string;
+}
+
 export interface MenuItem {
   id: string;
   name: string;
@@ -39,9 +48,17 @@ export interface MenuItem {
   tags?: DietTag[];
 }
 
+/**
+ * Cómo se compra una categoría:
+ * - "vitrina": se vende hoy, sin anticipo (postres y panes del día);
+ * - "encargo": se prepara a pedido, con anticipación y anticipo.
+ */
+export type Availability = "vitrina" | "encargo";
+
 export interface MenuCategory {
   id: string;
   name: string;
+  availability: Availability;
   items: MenuItem[];
 }
 
@@ -217,6 +234,12 @@ export interface SiteConfig {
     /** Porcentaje de anticipo (1-100). */
     depositPercent: number;
     paymentNote: string;
+    /** Frase corta de lo que se vende hoy en tienda, para el hero (opcional). */
+    readyLabel?: string;
+    /** Nombre de lo que se prepara por encargo, p. ej. "Pasteles por encargo" (opcional). */
+    madeToOrderLabel?: string;
+    /** Botón, etiqueta de categoría y mensaje de WhatsApp de cada tipo de compra. `{item}` se reemplaza por el nombre del platillo. */
+    itemOrder: Record<Availability, ItemOrderCopy>;
   };
   contact: {
     email: string;

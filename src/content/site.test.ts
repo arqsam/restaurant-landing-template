@@ -115,6 +115,17 @@ describe("site config (Mallow & Crumb)", () => {
     }
   });
 
+  it("cada categoría indica si es de vitrina o por encargo y hay textos para ambos", () => {
+    for (const category of [...site.menu, ...(site.beverages ? [site.beverages] : [])]) {
+      expect(["vitrina", "encargo"]).toContain(category.availability);
+    }
+    for (const copy of Object.values(site.orders.itemOrder)) {
+      expect(copy.label.trim().length).toBeGreaterThan(0);
+      expect(copy.badge.trim().length).toBeGreaterThan(0);
+      expect(copy.message).toContain("{item}");
+    }
+  });
+
   it("los destacados apuntan a platillos que existen", () => {
     const ids = new Set(items.map((item) => item.id));
     for (const id of site.featured.itemIds) {
