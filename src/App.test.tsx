@@ -97,6 +97,18 @@ describe("App", () => {
     ).toBeInTheDocument();
   });
 
+  it("el contacto incluye las preguntas frecuentes como acordeón", () => {
+    render(<App />);
+    expect(
+      screen.getByRole("heading", { level: 3, name: site.faq.title }),
+    ).toBeInTheDocument();
+    for (const item of site.faq.items) {
+      expect(
+        screen.getByRole("button", { name: item.question }),
+      ).toHaveAttribute("aria-expanded", "false");
+    }
+  });
+
   it("incluye el botón flotante de WhatsApp con el mismo enlace", () => {
     render(<App />);
     expect(
