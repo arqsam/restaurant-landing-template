@@ -70,7 +70,9 @@ describe("App", () => {
 
   it("los platillos de vitrina se piden hoy y los pasteles se encargan, cada uno con su mensaje", () => {
     render(<App />);
-    const vitrina = screen.getByRole("link", { name: /pedir hoy mallow tostado/i });
+    const vitrina = screen.getByRole("link", {
+      name: /pedir hoy mallow tostado/i,
+    });
     expect(
       new URL(vitrina.getAttribute("href")!).searchParams.get("text"),
     ).toContain("¿Está disponible hoy?");
@@ -80,6 +82,19 @@ describe("App", () => {
     expect(
       new URL(encargo.getAttribute("href")!).searchParams.get("text"),
     ).toContain("anticipación");
+  });
+
+  it("el contacto incluye horarios y ubicación como subsección", () => {
+    render(<App />);
+    expect(
+      screen.getByRole("heading", { level: 2, name: site.contactIntro.title }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { level: 3, name: "Horarios" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { level: 3, name: "Ubicación" }),
+    ).toBeInTheDocument();
   });
 
   it("incluye el botón flotante de WhatsApp con el mismo enlace", () => {
