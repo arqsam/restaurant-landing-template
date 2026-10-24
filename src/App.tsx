@@ -1,5 +1,6 @@
 import { Catering } from "./components/Catering/Catering";
 import { Contact } from "./components/Contact/Contact";
+import { Faq } from "./components/Faq/Faq";
 import { Featured } from "./components/Featured/Featured";
 import { Gallery } from "./components/Gallery/Gallery";
 import { Header } from "./components/Header/Header";
@@ -121,6 +122,13 @@ function App() {
             address={site.contact.address}
             mapsUrl={site.contact.mapsUrl}
           />
+          {site.sections.faq ? (
+            <Faq
+              id={SECTION_IDS.faq}
+              title={site.faq.title}
+              items={site.faq.items}
+            />
+          ) : null}
         </Contact>
       </main>
 

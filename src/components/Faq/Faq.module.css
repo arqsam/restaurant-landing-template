@@ -1,0 +1,97 @@
+.faq {
+  max-width: 56rem;
+  margin: var(--space-9) auto 0;
+}
+
+.title {
+  margin: 0 0 var(--space-5);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  color: inherit;
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.question {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  width: 100%;
+  padding: var(--space-4) 0;
+  border: 0;
+  background: none;
+  color: var(--color-text);
+  font: inherit;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  line-height: 1.3;
+  text-align: left;
+  cursor: pointer;
+}
+
+.trigger:hover {
+  color: var(--color-accent-text);
+}
+
+/* Signo "+" que pasa a "−" al abrir, dibujado con dos barras */
+.icon {
+  position: relative;
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+}
+
+.icon::before,
+.icon::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: currentColor;
+  border-radius: 1px;
+}
+
+.icon::after {
+  transform: rotate(90deg);
+}
+
+.trigger[aria-expanded="true"] .icon::after {
+  transform: rotate(0deg);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .icon::after {
+    transition: transform 0.2s ease;
+  }
+}
+
+.panel {
+  padding: 0 var(--space-7) var(--space-5) 0;
+  color: var(--color-muted);
+  line-height: 1.6;
+}
+
+.panel p {
+  margin: 0;
+}
