@@ -1,8 +1,10 @@
 import { Catering } from "./components/Catering/Catering";
+import { Contact } from "./components/Contact/Contact";
 import { Featured } from "./components/Featured/Featured";
 import { Gallery } from "./components/Gallery/Gallery";
 import { Header } from "./components/Header/Header";
 import { Hero } from "./components/Hero/Hero";
+import { HoursAndLocation } from "./components/HoursAndLocation/HoursAndLocation";
 import { HowToOrder } from "./components/HowToOrder/HowToOrder";
 import { Menu } from "./components/Menu/Menu";
 import { SectionHeading } from "./components/SectionHeading/SectionHeading";
@@ -112,15 +114,14 @@ function App() {
           />
         ) : null}
 
-        {/* Marcador temporal: se reemplaza por la sección real de Contacto
-            en los Issues siguientes. */}
-        <section
-          id={SECTION_IDS.contact}
-          className="container"
-          style={{ minHeight: "70vh" }}
-        >
-          <h2>Contacto</h2>
-        </section>
+        <Contact id={SECTION_IDS.contact} intro={site.contactIntro}>
+          <HoursAndLocation
+            id={SECTION_IDS.hours}
+            hours={site.hours}
+            address={site.contact.address}
+            mapsUrl={site.contact.mapsUrl}
+          />
+        </Contact>
       </main>
 
       <WhatsAppButton href={whatsappUrl} label="Escríbenos por WhatsApp" />

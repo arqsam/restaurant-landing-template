@@ -133,6 +133,22 @@ describe("site config (Mallow & Crumb)", () => {
     }
   });
 
+  it("el encabezado de contacto tiene texto y énfasis válido", () => {
+    const { eyebrow, title, titleEmphasis } = site.contactIntro;
+    expect(eyebrow.trim().length).toBeGreaterThan(0);
+    expect(title.trim().length).toBeGreaterThan(0);
+    if (titleEmphasis) expect(title).toContain(titleEmphasis);
+  });
+
+  it("cada día abierto cierra después de abrir y la zona horaria es válida", () => {
+    expect(
+      () => new Intl.DateTimeFormat("es-MX", { timeZone: site.hours.timeZone }),
+    ).not.toThrow();
+    for (const day of Object.values(site.hours.schedule)) {
+      if (day) expect(day.close > day.open).toBe(true);
+    }
+  });
+
   it("los destacados apuntan a platillos que existen", () => {
     const ids = new Set(items.map((item) => item.id));
     for (const id of site.featured.itemIds) {
