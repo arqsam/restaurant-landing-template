@@ -190,6 +190,8 @@ export interface SiteConfig {
   };
   /** Encabezado editorial de la sección de menú o catálogo. */
   menuIntro: SectionIntro;
+  /** Encabezado editorial de la sección de contacto (incluye horarios y ubicación). */
+  contactIntro: SectionIntro;
   /** Encabezado editorial de la sección de catering o eventos. */
   cateringIntro: SectionIntro;
   /** Activa o desactiva secciones opcionales. Hero, Contacto y Footer siempre se muestran. */

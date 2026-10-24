@@ -22,6 +22,13 @@ export const site: SiteConfig = {
     subtitle:
       "Paquetes por persona para reuniones, bodas y festejos. Cotizamos según tu fecha y el número de invitados.",
   },
+  contactIntro: {
+    eyebrow: "Visítanos",
+    title: "Te esperamos con algo dulce",
+    titleEmphasis: "algo dulce",
+    subtitle:
+      "Pasa por la tienda, escríbenos por WhatsApp o déjanos tu solicitud.",
+  },
   menuIntro: {
     eyebrow: "Nuestra carta",
     title: "Hecho a mano, cada día",
