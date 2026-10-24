@@ -5,11 +5,7 @@
 export type BrandType = "restaurant" | "bakery" | "catering";
 
 export type DietTag =
-  | "vegano"
-  | "sin-gluten"
-  | "sin-lactosa"
-  | "picante"
-  | "contiene-nueces";
+  "vegano" | "sin-gluten" | "sin-lactosa" | "picante" | "contiene-nueces";
 
 export type Weekday = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
 
