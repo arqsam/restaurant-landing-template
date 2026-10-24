@@ -51,8 +51,10 @@ describe("site config (Mallow & Crumb)", () => {
     }
   });
 
-  it("los precios \"desde\" no bajan del tamaño más económico del personalizador", () => {
-    const cheapest = Math.min(...site.customizer.sizes.map((size) => size.price));
+  it('los precios "desde" no bajan del tamaño más económico del personalizador', () => {
+    const cheapest = Math.min(
+      ...site.customizer.sizes.map((size) => size.price),
+    );
     for (const item of items.filter((i) => i.priceFrom)) {
       expect(item.price).toBeGreaterThanOrEqual(cheapest);
     }
@@ -71,7 +73,8 @@ describe("site config (Mallow & Crumb)", () => {
     for (const intro of [site.featured, site.cateringIntro]) {
       expect(intro.eyebrow.trim().length).toBeGreaterThan(0);
       expect(intro.title.trim().length).toBeGreaterThan(0);
-      if (intro.titleEmphasis) expect(intro.title).toContain(intro.titleEmphasis);
+      if (intro.titleEmphasis)
+        expect(intro.title).toContain(intro.titleEmphasis);
     }
   });
 
@@ -99,7 +102,8 @@ describe("site config (Mallow & Crumb)", () => {
     for (const intro of [site.howToOrder, site.gallery, site.testimonials]) {
       expect(intro.eyebrow.trim().length).toBeGreaterThan(0);
       expect(intro.title.trim().length).toBeGreaterThan(0);
-      if (intro.titleEmphasis) expect(intro.title).toContain(intro.titleEmphasis);
+      if (intro.titleEmphasis)
+        expect(intro.title).toContain(intro.titleEmphasis);
     }
   });
 
@@ -112,6 +116,20 @@ describe("site config (Mallow & Crumb)", () => {
     for (const step of site.howToOrder.steps) {
       expect(step.title.trim().length).toBeGreaterThan(0);
       expect(step.description.trim().length).toBeGreaterThan(0);
+    }
+  });
+
+  it("cada categoría indica si es de vitrina o por encargo y hay textos para ambos", () => {
+    for (const category of [
+      ...site.menu,
+      ...(site.beverages ? [site.beverages] : []),
+    ]) {
+      expect(["vitrina", "encargo"]).toContain(category.availability);
+    }
+    for (const copy of Object.values(site.orders.itemOrder)) {
+      expect(copy.label.trim().length).toBeGreaterThan(0);
+      expect(copy.badge.trim().length).toBeGreaterThan(0);
+      expect(copy.message).toContain("{item}");
     }
   });
 
@@ -150,7 +168,15 @@ describe("site config (Mallow & Crumb)", () => {
 
   it("los horarios cubren los 7 días con formato HH:mm", () => {
     const days = Object.keys(site.hours.schedule);
-    expect(days.sort()).toEqual(["fri", "mon", "sat", "sun", "thu", "tue", "wed"]);
+    expect(days.sort()).toEqual([
+      "fri",
+      "mon",
+      "sat",
+      "sun",
+      "thu",
+      "tue",
+      "wed",
+    ]);
     for (const day of Object.values(site.hours.schedule)) {
       if (day) {
         expect(day.open).toMatch(TIME);

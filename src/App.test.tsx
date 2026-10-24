@@ -68,6 +68,20 @@ describe("App", () => {
     }
   });
 
+  it("los platillos de vitrina se piden hoy y los pasteles se encargan, cada uno con su mensaje", () => {
+    render(<App />);
+    const vitrina = screen.getByRole("link", { name: /pedir hoy mallow tostado/i });
+    expect(
+      new URL(vitrina.getAttribute("href")!).searchParams.get("text"),
+    ).toContain("¿Está disponible hoy?");
+    const encargo = screen.getByRole("link", {
+      name: /encargar red velvet con queso crema/i,
+    });
+    expect(
+      new URL(encargo.getAttribute("href")!).searchParams.get("text"),
+    ).toContain("anticipación");
+  });
+
   it("incluye el botón flotante de WhatsApp con el mismo enlace", () => {
     render(<App />);
     expect(

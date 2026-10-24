@@ -18,6 +18,7 @@ const packages: CateringPackage[] = [
 const beverages: MenuCategory = {
   id: "bebidas",
   name: "Bebidas para tu evento",
+  availability: "encargo",
   items: [
     { id: "cafe", name: "Café", description: "Tostado medio", price: 45, tags: ["vegano"] },
   ],

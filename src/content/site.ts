@@ -56,6 +56,7 @@ export const site: SiteConfig = {
   menu: [
     {
       id: "pasteles",
+      availability: "encargo",
       name: "Pasteles y tartas por encargo",
       items: [
         {
@@ -110,6 +111,7 @@ export const site: SiteConfig = {
     },
     {
       id: "vitrina",
+      availability: "vitrina",
       name: "Postres de vitrina",
       items: [
         {
@@ -190,6 +192,7 @@ export const site: SiteConfig = {
     },
     {
       id: "panaderia",
+      availability: "vitrina",
       name: "Galletas y panes dulces",
       items: [
         {
@@ -376,6 +379,7 @@ export const site: SiteConfig = {
   ],
   beverages: {
     id: "bebidas",
+    availability: "encargo",
     name: "Bebidas para tu evento · precio por servicio",
     items: [
       {
@@ -556,6 +560,21 @@ export const site: SiteConfig = {
     defaultMessage: "Hola, me gustaría hacer un pedido.",
     minLeadDays: 2,
     depositPercent: 50,
+    readyLabel: "Postres de vitrina disponibles hoy",
+    madeToOrderLabel: "Pasteles por encargo",
+    itemOrder: {
+      vitrina: {
+        label: "Pedir hoy",
+        badge: "Disponible hoy",
+        message: "Hola, quiero pedir 1 {item}. ¿Está disponible hoy?",
+      },
+      encargo: {
+        label: "Encargar",
+        badge: "Por encargo",
+        message:
+          "Hola, quiero encargar {item}. ¿Con cuánta anticipación necesitan el pedido?",
+      },
+    },
     paymentNote:
       "Te enviamos los datos de pago por WhatsApp al confirmar tu pedido.",
   },

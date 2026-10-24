@@ -1,14 +1,23 @@
-import type { MenuCategory } from "../../content/types";
+import type {
+  Availability,
+  ItemOrderCopy,
+  MenuCategory,
+  MenuItem,
+} from "../../content/types";
 import { DIET_TAG_LABELS, categoryAnchorId } from "../../lib/menu";
 import { formatMXN } from "../../lib/money";
 import styles from "./Menu.module.css";
 
 interface MenuProps {
   categories: MenuCategory[];
+  /** Texto del botón y rótulo de cada tipo de compra. */
+  itemOrder: Record<Availability, ItemOrderCopy>;
+  /** Enlace de WhatsApp para pedir un platillo. */
+  buildHref: (availability: Availability, item: MenuItem) => string;
 }
 
 /** Carta por categorías: nombre, descripción, etiquetas de dieta y precio en MXN. */
-export function Menu({ categories }: MenuProps) {
+export function Menu({ categories, itemOrder, buildHref }: MenuProps) {
   return (
     <div className={styles.menu}>
       <nav className={styles.chips} aria-label="Categorías del menú">
@@ -30,9 +39,14 @@ export function Menu({ categories }: MenuProps) {
             className={styles.category}
             aria-labelledby={titleId}
           >
-            <h3 id={titleId} className={styles.categoryTitle}>
-              {category.name}
-            </h3>
+            <div className={styles.categoryHead}>
+              <h3 id={titleId} className={styles.categoryTitle}>
+                {category.name}
+              </h3>
+              <span className={styles.badge}>
+                {itemOrder[category.availability].badge}
+              </span>
+            </div>
             <ul className={styles.items}>
               {category.items.map((item) => (
                 <li
@@ -69,6 +83,15 @@ export function Menu({ categories }: MenuProps) {
                       ))}
                     </ul>
                   ) : null}
+                  <a
+                    className={styles.action}
+                    href={buildHref(category.availability, item)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${itemOrder[category.availability].label} ${item.name} (se abre en una pestaña nueva)`}
+                  >
+                    {itemOrder[category.availability].label}
+                  </a>
                   </div>
                 </li>
               ))}

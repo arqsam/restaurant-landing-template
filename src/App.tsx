@@ -13,6 +13,7 @@ import { useBrandTheme } from "./hooks/useBrandTheme";
 import { buildPackageMessage } from "./lib/catering";
 import { resolveFeatured } from "./lib/featured";
 import { buildHeroFacts } from "./lib/hero";
+import { buildItemOrderHref } from "./lib/itemOrder";
 import { SECTION_IDS, buildNavLinks } from "./lib/nav";
 import { buildWhatsAppUrl } from "./lib/whatsapp";
 
@@ -66,7 +67,13 @@ function App() {
             titleEmphasis={site.menuIntro.titleEmphasis}
             subtitle={site.menuIntro.subtitle}
           />
-          <Menu categories={site.menu} />
+          <Menu
+            categories={site.menu}
+            itemOrder={site.orders.itemOrder}
+            buildHref={(availability, item) =>
+              buildItemOrderHref(site.orders, availability, item)
+            }
+          />
         </section>
 
         {site.sections.catering ? (
