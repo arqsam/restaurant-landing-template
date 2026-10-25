@@ -8,11 +8,18 @@ export interface OrderSelection {
   fillingId?: string;
   decorationId?: string;
   paletteId?: string;
+  fruitIds?: string[];
   dedication?: string;
 }
 
 export type OrderField =
-  "size" | "flavor" | "filling" | "decoration" | "palette" | "dedication";
+  | "size"
+  | "flavor"
+  | "filling"
+  | "decoration"
+  | "palette"
+  | "fruit"
+  | "dedication";
 
 export const ORDER_FIELD_LABELS: Record<OrderField, string> = {
   size: "Tamaño",
@@ -20,6 +27,7 @@ export const ORDER_FIELD_LABELS: Record<OrderField, string> = {
   filling: "Relleno",
   decoration: "Decoración",
   palette: "Paleta de color",
+  fruit: "Fruta",
   dedication: "Dedicatoria",
 };
 
@@ -88,6 +96,22 @@ export function validateSelection(
     ));
   }
 
+  const fruitIds = selection.fruitIds ?? [];
+  if (fruitIds.length > 0) {
+    if (!customizer.fruits) {
+      errors.fruit = "Este negocio no ofrece fruta";
+    } else if (
+      fruitIds.some((id) => !customizer.fruits?.some((f) => f.id === id))
+    ) {
+      errors.fruit = "Una de las frutas ya no está disponible";
+    } else if (
+      customizer.maxFruits !== undefined &&
+      fruitIds.length > customizer.maxFruits
+    ) {
+      errors.fruit = `Elige máximo ${customizer.maxFruits} frutas`;
+    }
+  }
+
   const dedication = normalizeDedication(selection.dedication);
   if (dedication.length > 0) {
     if (!customizer.dedication) {
@@ -98,7 +122,10 @@ export function validateSelection(
   }
 
   return {
-    valid: missing.length === 0 && errors.dedication === undefined,
+    valid:
+      missing.length === 0 &&
+      errors.dedication === undefined &&
+      errors.fruit === undefined,
     missing,
     errors,
   };
@@ -155,6 +182,13 @@ export function calcQuote(
     });
   }
 
+  for (const fruitId of selection.fruitIds ?? []) {
+    const fruit = lookup(customizer.fruits ?? [], fruitId, "fruta");
+    if (fruit?.extraPrice) {
+      lines.push({ label: `Fruta ${fruit.label}`, amount: fruit.extraPrice });
+    }
+  }
+
   if (
     normalizeDedication(selection.dedication).length > 0 &&
     customizer.dedication?.extraPrice
@@ -189,6 +223,10 @@ export function describeSelection(
     (p) => p.id === selection.paletteId,
   );
   const dedication = normalizeDedication(selection.dedication);
+  const fruits = (selection.fruitIds ?? []).flatMap((id) => {
+    const fruit = customizer.fruits?.find((f) => f.id === id);
+    return fruit ? [fruit.label] : [];
+  });
 
   if (size) lines.push({ label: ORDER_FIELD_LABELS.size, value: size.label });
   if (flavor) {
@@ -204,6 +242,9 @@ export function describeSelection(
         ? `${decoration.label} (${palette.label})`
         : decoration.label,
     });
+  }
+  if (fruits.length > 0) {
+    lines.push({ label: ORDER_FIELD_LABELS.fruit, value: fruits.join(", ") });
   }
   if (dedication.length > 0) {
     lines.push({

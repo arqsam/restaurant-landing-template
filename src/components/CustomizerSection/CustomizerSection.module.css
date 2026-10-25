@@ -1,0 +1,90 @@
+.band {
+  background: color-mix(in srgb, var(--color-accent) 12%, var(--color-bg));
+}
+
+.inner {
+  display: grid;
+  gap: var(--space-7);
+  align-items: center;
+  padding-block: var(--space-8);
+}
+
+@media (min-width: 48em) {
+  .inner {
+    grid-template-columns: 24rem 1fr;
+    gap: var(--space-9);
+    padding-block: var(--space-9);
+  }
+}
+
+.photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+@media (max-width: 47.99em) {
+  .photo {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+.copy {
+  max-width: 34rem;
+}
+
+.eyebrow {
+  margin: 0 0 var(--space-3);
+  color: var(--color-accent-text);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0 0 var(--space-4);
+  color: inherit;
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: 400;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+.title em {
+  color: var(--color-accent-text);
+  font-style: italic;
+}
+
+.subtitle {
+  margin: 0 0 var(--space-6);
+  color: var(--color-muted);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.cta {
+  min-height: 3rem;
+  padding: var(--space-3) var(--space-6);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.cta:hover {
+  filter: brightness(1.12);
+}

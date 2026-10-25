@@ -1,6 +1,7 @@
 import { Catering } from "./components/Catering/Catering";
 import { Contact } from "./components/Contact/Contact";
 import { Faq } from "./components/Faq/Faq";
+import { CustomizerSection } from "./components/CustomizerSection/CustomizerSection";
 import { Featured } from "./components/Featured/Featured";
 import { Gallery } from "./components/Gallery/Gallery";
 import { Header } from "./components/Header/Header";
@@ -78,6 +79,22 @@ function App() {
             }
           />
         </section>
+
+        {site.sections.customizer ? (
+          <CustomizerSection
+            id={SECTION_IDS.customizer}
+            customizer={site.customizer}
+            depositPercent={site.orders.depositPercent}
+            notes={[site.orders.paymentNote]}
+            ctaLabel="Pedir por WhatsApp"
+            buildHref={(summary) =>
+              buildWhatsAppUrl(
+                site.orders.whatsapp,
+                `${site.customizer.orderIntro}\n\n${summary}`,
+              )
+            }
+          />
+        ) : null}
 
         {site.sections.catering ? (
           <Catering

@@ -22,6 +22,15 @@ Las imágenes de la plantilla son **de demostración**. **No** están cubiertas 
 
 Recortadas a cuadrado y exportadas en WebP a 240 px y 480 px de lado.
 
+## Referencias del personalizador (`public/images/gallery/`)
+
+| Decoración | Archivos                 | Fotógrafo/a        | Enlace                                                                          |
+| ---------- | ------------------------ | ------------------ | ------------------------------------------------------------------------------- |
+| Floral     | `pastel-floral-*.webp`   | **[Beyza]**        | https://www.pexels.com/es-es/foto/delicioso-pastel-de-chocolate-20623777/       |
+| Temático   | `pastel-tematico-*.webp` | **[Annie Japaud]** | https://www.pexels.com/es-es/foto/comida-dulce-conejo-de-pascua-pastel-7272012/ |
+
+Recortadas a 4:5 y exportadas en WebP a 480 px y 960 px de ancho. Minimalista y Drip reutilizan fotos de la galería.
+
 ## Antes de entregar el sitio a un cliente
 
 1. Sustituye las imágenes por las del negocio (mismo nombre de archivo o actualiza `src/content/site.ts`).

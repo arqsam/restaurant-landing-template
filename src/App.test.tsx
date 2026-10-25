@@ -109,6 +109,19 @@ describe("App", () => {
     }
   });
 
+  it("el personalizador es una sección propia con módulo de entrada, no el diseñador completo", () => {
+    const { container } = render(<App />);
+    const section = container.querySelector("section#personalizar");
+    expect(section).toBeTruthy();
+    expect(container.querySelector("section#menu")!.contains(section)).toBe(
+      false,
+    );
+    expect(
+      screen.getByRole("button", { name: site.customizer.teaser.ctaLabel }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("group", { name: "Tamaño" })).toBeNull();
+  });
+
   it("incluye el botón flotante de WhatsApp con el mismo enlace", () => {
     render(<App />);
     expect(

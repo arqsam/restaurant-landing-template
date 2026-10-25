@@ -1,0 +1,84 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40; /* por encima del header (20) y del botón de WhatsApp (15) */
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  background: rgb(26 18 15 / 0.6);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+/* Móvil: hoja a pantalla completa */
+.panel {
+  position: relative;
+  width: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--space-7) var(--gutter) var(--space-8);
+  background: var(--color-bg);
+  color: var(--color-text);
+  outline: none;
+}
+
+@media (min-width: 64em) {
+  .overlay {
+    align-items: center;
+    padding: var(--space-6);
+  }
+
+  .panel {
+    max-width: 76rem;
+    max-height: 100%;
+    padding: var(--space-8) var(--space-8) var(--space-8);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+.close {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: calc(var(--space-5) * -1) 0 0 auto;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-primary);
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.close:focus-visible {
+  outline: 3px solid var(--color-accent-text);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .overlay {
+    animation: fade 0.18s ease-out;
+  }
+
+  .panel {
+    animation: rise 0.22s ease-out;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    transform: translateY(1rem);
+  }
+}

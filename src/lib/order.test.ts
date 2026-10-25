@@ -20,6 +20,7 @@ const valid: OrderSelection = {
   decorationId: "floral",
   paletteId: "lavanda",
   dedication: "Feliz cumple Ana",
+  fruitIds: [],
 };
 
 describe("validateSelection", () => {
@@ -208,6 +209,59 @@ describe("calcQuote", () => {
       }
     }
     expect(combos).toBeGreaterThan(100);
+  });
+});
+
+describe("fruta", () => {
+  it("es opcional: sin fruta la selección sigue siendo válida", () => {
+    expect(
+      validateSelection({ ...valid, fruitIds: undefined }, customizer).valid,
+    ).toBe(true);
+  });
+
+  it("suma el extra de cada fruta elegida", () => {
+    const quote = calcQuote(
+      { ...valid, fruitIds: ["fresas", "frutos-rojos"] },
+      customizer,
+      percent,
+    );
+    expect(quote.total).toBe(1010 + 50 + 70);
+    expect(quote.lines.map((l) => l.label)).toContain("Fruta Fresas");
+  });
+
+  it("aparece en el resumen con las frutas separadas por coma", () => {
+    const lines = describeSelection(
+      { ...valid, fruitIds: ["fresas", "durazno"] },
+      customizer,
+    );
+    expect(lines).toContainEqual({ label: "Fruta", value: "Fresas, Durazno" });
+    expect(
+      buildOrderSummary({ ...valid, fruitIds: ["fresas"] }, customizer),
+    ).toContain("Fruta: Fresas");
+  });
+
+  it("rechaza más frutas que el máximo permitido", () => {
+    const max = customizer.maxFruits!;
+    const ids = customizer.fruits!.slice(0, max + 1).map((f) => f.id);
+    const check = validateSelection({ ...valid, fruitIds: ids }, customizer);
+    expect(check.valid).toBe(false);
+    expect(check.errors.fruit).toContain(String(max));
+  });
+
+  it("rechaza una fruta que no existe y no la acepta si el negocio no ofrece fruta", () => {
+    expect(
+      validateSelection({ ...valid, fruitIds: ["piña"] }, customizer).valid,
+    ).toBe(false);
+    const sin: Customizer = { ...customizer, fruits: undefined };
+    expect(
+      validateSelection({ ...valid, fruitIds: ["fresas"] }, sin).errors.fruit,
+    ).toBeTruthy();
+  });
+
+  it("calcQuote lanza error con una fruta desconocida", () => {
+    expect(() =>
+      calcQuote({ ...valid, fruitIds: ["piña"] }, customizer, percent),
+    ).toThrow(/desconocida/i);
   });
 });
 
