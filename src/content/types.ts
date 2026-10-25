@@ -5,7 +5,11 @@
 export type BrandType = "restaurant" | "bakery" | "catering";
 
 export type DietTag =
-  "vegano" | "sin-gluten" | "sin-lactosa" | "picante" | "contiene-nueces";
+  | "vegano"
+  | "sin-gluten"
+  | "sin-lactosa"
+  | "picante"
+  | "contiene-nueces";
 
 export type Weekday = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
 
@@ -105,16 +109,34 @@ export interface DecorationStyle {
   id: string;
   label: string;
   description: string;
-  image?: string;
+  /** Foto de referencia de este estilo de decoración (opcional). */
+  image?: MenuImage;
   extraPrice?: number;
   palettes: Palette[];
 }
 
+/** Módulo de entrada al personalizador: se ve en la página y abre el diseñador a pantalla completa. */
+export interface CustomizerTeaser extends SectionIntro {
+  ctaLabel: string;
+  /** Texto del botón cuando ya se empezó a diseñar. */
+  resumeLabel: string;
+  image?: MenuImage;
+}
+
 export interface Customizer {
   title: string;
+  teaser: CustomizerTeaser;
+  /** Frase breve bajo el título que explica cómo funciona. */
+  intro?: string;
+  /** Primera línea del mensaje de WhatsApp con el pastel armado. */
+  orderIntro: string;
   sizes: CakeSize[];
   flavors: CustomizerOption[];
   fillings: CustomizerOption[];
+  /** Fruta para decorar o acompañar (opcional, se pueden elegir varias). */
+  fruits?: CustomizerOption[];
+  /** Máximo de frutas que se pueden elegir; sin valor, no hay límite. */
+  maxFruits?: number;
   decorations: DecorationStyle[];
   dedication?: { maxChars: number; extraPrice?: number };
 }
@@ -187,6 +209,8 @@ export interface SiteConfig {
   nav: {
     /** Etiqueta del enlace al menú o catálogo: "Menú", "Pastelería", "Carta"... */
     menuLabel: string;
+    /** Etiqueta del enlace al personalizador: "Arma tu pastel", "Diseña tu pedido"... */
+    customizerLabel: string;
   };
   /** Encabezado editorial de la sección de menú o catálogo. */
   menuIntro: SectionIntro;

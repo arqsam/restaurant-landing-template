@@ -149,6 +149,32 @@ describe("site config (Mallow & Crumb)", () => {
     }
   });
 
+  it("el personalizador tiene el texto de introducción para WhatsApp", () => {
+    expect(site.customizer.orderIntro.trim().length).toBeGreaterThan(0);
+  });
+
+  it("el personalizador tiene módulo de entrada, fruta con ids únicos y límite válido", () => {
+    const { teaser, fruits, maxFruits } = site.customizer;
+    expect(teaser.eyebrow.trim().length).toBeGreaterThan(0);
+    expect(teaser.ctaLabel.trim().length).toBeGreaterThan(0);
+    expect(teaser.resumeLabel.trim().length).toBeGreaterThan(0);
+    if (teaser.titleEmphasis)
+      expect(teaser.title).toContain(teaser.titleEmphasis);
+    expect(site.nav.customizerLabel.trim().length).toBeGreaterThan(0);
+    expect((fruits ?? []).length).toBeGreaterThan(0);
+    expect(unique((fruits ?? []).map((f) => f.id))).toBe(true);
+    if (maxFruits !== undefined) expect(maxFruits).toBeGreaterThan(0);
+  });
+
+  it("las fotos de referencia de las decoraciones tienen texto alternativo y dimensiones", () => {
+    for (const decoration of site.customizer.decorations) {
+      if (!decoration.image) continue;
+      expect(decoration.image.alt.trim().length).toBeGreaterThan(0);
+      expect(decoration.image.width).toBeGreaterThan(0);
+      expect(decoration.image.height).toBeGreaterThan(0);
+    }
+  });
+
   it("los destacados apuntan a platillos que existen", () => {
     const ids = new Set(items.map((item) => item.id));
     for (const id of site.featured.itemIds) {

@@ -14,7 +14,7 @@ export const site: SiteConfig = {
     description:
       "Pasteles personalizados, postres de vitrina y mesas de postres para tus eventos. Pide por WhatsApp o cotiza en línea.",
   },
-  nav: { menuLabel: "Pastelería" },
+  nav: { menuLabel: "Pastelería", customizerLabel: "Arma tu pastel" },
   cateringIntro: {
     eyebrow: "Eventos y mesas",
     title: "Tu celebración, endulzada",
@@ -254,6 +254,26 @@ export const site: SiteConfig = {
   },
   customizer: {
     title: "Arma tu pastel",
+    teaser: {
+      eyebrow: "Hecho a tu medida",
+      title: "Diseña tu pastel ideal",
+      titleEmphasis: "tu pastel",
+      subtitle:
+        "Elige tamaño, sabor, relleno, fruta y decoración. Verás un estimado al instante y lo enviamos por WhatsApp.",
+      ctaLabel: "Empezar a diseñar",
+      resumeLabel: "Seguir diseñando",
+      image: {
+        src: "/images/gallery/tarta-limon-960.webp",
+        srcSet:
+          "/images/gallery/tarta-limon-480.webp 480w, /images/gallery/tarta-limon-960.webp 960w",
+        width: 960,
+        height: 1200,
+        alt: "Tarta de limón vista desde arriba, con rodajas de limón, arándanos y menta",
+      },
+    },
+    intro:
+      "Elige tamaño, sabor, relleno y decoración. Calculamos un estimado al instante.",
+    orderIntro: "Hola, me gustaría encargar un pastel personalizado:",
     sizes: [
       { id: "mini", label: "Mini (6 porciones)", servings: 6, price: 480 },
       {
@@ -281,11 +301,27 @@ export const site: SiteConfig = {
       { id: "ganache", label: "Ganache de chocolate", extraPrice: 40 },
       { id: "dulce-leche", label: "Dulce de leche", extraPrice: 50 },
     ],
+    fruits: [
+      { id: "fresas", label: "Fresas", extraPrice: 50 },
+      { id: "frutos-rojos", label: "Frutos rojos", extraPrice: 70 },
+      { id: "arandanos", label: "Arándanos", extraPrice: 60 },
+      { id: "durazno", label: "Durazno", extraPrice: 40 },
+      { id: "mango", label: "Mango", extraPrice: 50 },
+    ],
+    maxFruits: 2,
     decorations: [
       {
         id: "minimalista",
         label: "Minimalista",
         description: "Acabado liso con detalles sutiles.",
+        image: {
+          src: "/images/gallery/pastel-red-velvet-960.webp",
+          srcSet:
+            "/images/gallery/pastel-red-velvet-480.webp 480w, /images/gallery/pastel-red-velvet-960.webp 960w",
+          width: 960,
+          height: 1200,
+          alt: "Pastel de acabado liso con betún blanco, decorado solo con frutos rojos",
+        },
         palettes: [
           { id: "crema", label: "Crema", colors: ["#f5ecdc", "#e8d5b5"] },
           {
@@ -305,6 +341,14 @@ export const site: SiteConfig = {
         label: "Floral",
         description: "Flores de crema o comestibles sobre la superficie.",
         extraPrice: 120,
+        image: {
+          src: "/images/gallery/pastel-floral-960.webp",
+          srcSet:
+            "/images/gallery/pastel-floral-480.webp 480w, /images/gallery/pastel-floral-960.webp 960w",
+          width: 960,
+          height: 1200,
+          alt: "Pastel con rosas de crema en tonos morado y rosa, perlas comestibles y festones color crema",
+        },
         palettes: [
           {
             id: "primavera",
@@ -322,6 +366,14 @@ export const site: SiteConfig = {
         id: "drip",
         label: "Drip de chocolate",
         description: "Cobertura que escurre por los lados, con toppings.",
+        image: {
+          src: "/images/gallery/pastel-chocolate-960.webp",
+          srcSet:
+            "/images/gallery/pastel-chocolate-480.webp 480w, /images/gallery/pastel-chocolate-960.webp 960w",
+          width: 960,
+          height: 1200,
+          alt: "Pastel de chocolate con cobertura de ganache brillante y trufas",
+        },
         extraPrice: 90,
         palettes: [
           {
@@ -337,6 +389,14 @@ export const site: SiteConfig = {
         label: "Temático",
         description: "Diseño a tu medida a partir de un tema que elijas.",
         extraPrice: 150,
+        image: {
+          src: "/images/gallery/pastel-tematico-960.webp",
+          srcSet:
+            "/images/gallery/pastel-tematico-480.webp 480w, /images/gallery/pastel-tematico-960.webp 960w",
+          width: 960,
+          height: 1200,
+          alt: "Pastel temático de Pascua con conejo de chocolate, huevitos, flores de chocolate y chispas de colores",
+        },
         palettes: [
           {
             id: "cumple-infantil",

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { site } from "../content/site";
 import { SECTION_IDS, buildNavLinks } from "./nav";
 
-const nav = { menuLabel: "Pastelería" };
+const nav = { menuLabel: "Pastelería", customizerLabel: "Arma tu pastel" };
 const allOn = site.sections;
 const allOff = {
   featured: false,
@@ -14,9 +14,10 @@ const allOff = {
 };
 
 describe("buildNavLinks", () => {
-  it("con todo activo devuelve 4 enlaces en orden", () => {
+  it("con todo activo devuelve 5 enlaces en orden", () => {
     expect(buildNavLinks({ sections: allOn, nav }).map((l) => l.id)).toEqual([
       SECTION_IDS.menu,
+      SECTION_IDS.customizer,
       SECTION_IDS.catering,
       SECTION_IDS.gallery,
       SECTION_IDS.contact,
@@ -26,7 +27,8 @@ describe("buildNavLinks", () => {
   it("el primer enlace usa la etiqueta del negocio definida en la configuración", () => {
     expect(buildNavLinks({ sections: allOn, nav })[0].label).toBe("Pastelería");
     expect(
-      buildNavLinks({ sections: allOn, nav: { menuLabel: "Carta" } })[0].label,
+      buildNavLinks({ sections: allOn, nav: { ...nav, menuLabel: "Carta" } })[0]
+        .label,
     ).toBe("Carta");
   });
 
@@ -46,9 +48,21 @@ describe("buildNavLinks", () => {
     expect(ids).not.toContain(SECTION_IDS.gallery);
   });
 
-  it("personalizador, horarios y preguntas no aparecen nunca en la navegación", () => {
+  it("el personalizador usa su etiqueta y desaparece al desactivarlo", () => {
+    const on = buildNavLinks({ sections: allOn, nav });
+    expect(on[1]).toEqual({
+      id: SECTION_IDS.customizer,
+      label: "Arma tu pastel",
+    });
+    const off = buildNavLinks({
+      sections: { ...allOn, customizer: false },
+      nav,
+    }).map((l) => l.id);
+    expect(off).not.toContain(SECTION_IDS.customizer);
+  });
+
+  it("horarios y preguntas no aparecen nunca en la navegación", () => {
     const ids = buildNavLinks({ sections: allOn, nav }).map((l) => l.id);
-    expect(ids).not.toContain(SECTION_IDS.customizer);
     expect(ids).not.toContain(SECTION_IDS.hours);
     expect(ids).not.toContain(SECTION_IDS.faq);
   });
