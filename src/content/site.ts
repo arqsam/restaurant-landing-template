@@ -29,6 +29,21 @@ export const site: SiteConfig = {
     subtitle:
       "Pasa por la tienda, escríbenos por WhatsApp o déjanos tu solicitud.",
   },
+  contactForm: {
+    title: "Pide tu cotización",
+    intro:
+      "Cuéntanos qué celebras y para cuántas personas. Te respondemos por WhatsApp con el precio final.",
+    submitLabel: "Enviar solicitud",
+    sendingLabel: "Enviando…",
+    successTitle: "¡Recibimos tu solicitud!",
+    successBody:
+      "Te escribiremos por WhatsApp para confirmar los detalles y el precio. Si es urgente, puedes adelantar el mensaje ahora.",
+    errorTitle: "No pudimos registrar tu solicitud",
+    whatsappLabel: "Continuar por WhatsApp",
+    resetLabel: "Enviar otra solicitud",
+    privacyNote:
+      "Usamos tus datos solo para responder tu solicitud; no los compartimos.",
+  },
   menuIntro: {
     eyebrow: "Nuestra carta",
     title: "Hecho a mano, cada día",

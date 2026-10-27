@@ -5,11 +5,7 @@
 export type BrandType = "restaurant" | "bakery" | "catering";
 
 export type DietTag =
-  | "vegano"
-  | "sin-gluten"
-  | "sin-lactosa"
-  | "picante"
-  | "contiene-nueces";
+  "vegano" | "sin-gluten" | "sin-lactosa" | "picante" | "contiene-nueces";
 
 export type Weekday = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
 
@@ -184,6 +180,20 @@ export interface HeroImage {
 // --- Configuración completa ----------------------------------------------
 
 /** Encabezado de una sección: sobretítulo, título (con énfasis opcional) y subtítulo. */
+/** Textos del formulario de cotización. */
+export interface ContactFormCopy {
+  title: string;
+  intro: string;
+  submitLabel: string;
+  sendingLabel: string;
+  successTitle: string;
+  successBody: string;
+  errorTitle: string;
+  whatsappLabel: string;
+  resetLabel: string;
+  privacyNote: string;
+}
+
 export interface SectionIntro {
   eyebrow: string;
   title: string;
@@ -216,6 +226,8 @@ export interface SiteConfig {
   menuIntro: SectionIntro;
   /** Encabezado editorial de la sección de contacto (incluye horarios y ubicación). */
   contactIntro: SectionIntro;
+  /** Textos del formulario de cotización. */
+  contactForm: ContactFormCopy;
   /** Encabezado editorial de la sección de catering o eventos. */
   cateringIntro: SectionIntro;
   /** Activa o desactiva secciones opcionales. Hero, Contacto y Footer siempre se muestran. */

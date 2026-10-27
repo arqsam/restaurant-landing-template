@@ -250,4 +250,11 @@ describe("site config (Mallow & Crumb)", () => {
       expect(image.alt.trim().length).toBeGreaterThan(0);
     }
   });
+
+  it("el formulario de cotización tiene todos sus textos y un proveedor admitido", () => {
+    for (const [key, value] of Object.entries(site.contactForm)) {
+      expect(value.trim().length, key).toBeGreaterThan(0);
+    }
+    expect(["web3forms", "formspree"]).toContain(site.contact.formProvider);
+  });
 });

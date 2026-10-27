@@ -2,7 +2,7 @@ import type { SiteConfig } from "../content/types";
 
 /**
  * Ids de ancla. Los de navegación principal (menu, catering, gallery, contact)
- * son secciones, igual que el personalizador (customizer); horarios y FAQ son
+ * son secciones, igual que el personalizador (customizer); horarios, FAQ y formulario de cotización son
  * subsecciones que viven dentro de Contacto y no aparecen en el menú.
  */
 export const SECTION_IDS = {
@@ -16,6 +16,7 @@ export const SECTION_IDS = {
   testimonials: "resenas",
   hours: "horarios",
   faq: "faq",
+  quote: "cotizar",
   contact: "contacto",
 } as const;
 
