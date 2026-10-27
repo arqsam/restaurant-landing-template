@@ -41,6 +41,9 @@ export const site: SiteConfig = {
     errorTitle: "No pudimos registrar tu solicitud",
     whatsappLabel: "Continuar por WhatsApp",
     resetLabel: "Enviar otra solicitud",
+    orderHint:
+      "Es el pastel que armaste. Puedes editarlo; el precio es un estimado y lo confirmamos por WhatsApp.",
+    removeOrderLabel: "Quitar este pastel de la solicitud",
     privacyNote:
       "Usamos tus datos solo para responder tu solicitud; no los compartimos.",
   },
@@ -289,6 +292,7 @@ export const site: SiteConfig = {
     intro:
       "Elige tamaño, sabor, relleno y decoración. Calculamos un estimado al instante.",
     orderIntro: "Hola, me gustaría encargar un pastel personalizado:",
+    requestLabel: "Solicitar este pastel",
     sizes: [
       { id: "mini", label: "Mini (6 porciones)", servings: 6, price: 480 },
       {

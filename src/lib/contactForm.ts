@@ -27,6 +27,8 @@ export interface ContactValues {
   date: string;
   guests: string;
   fulfillment: Fulfillment | "";
+  /** Resumen del pastel armado en el personalizador (editable); vacío si no hay. */
+  order: string;
   message: string;
   /** Honeypot: campo oculto que una persona nunca llena. */
   website: string;
@@ -43,6 +45,7 @@ export const CONTACT_FIELDS: ContactField[] = [
   "date",
   "guests",
   "fulfillment",
+  "order",
   "message",
 ];
 
@@ -54,6 +57,7 @@ export const EMPTY_CONTACT: ContactValues = {
   date: "",
   guests: "",
   fulfillment: "",
+  order: "",
   message: "",
   website: "",
 };
@@ -67,10 +71,12 @@ export const CONTACT_FIELD_LABELS: Record<ContactField, string> = {
   date: "Fecha del evento",
   guests: "Personas",
   fulfillment: "¿Cómo lo recibes?",
+  order: "Tu pastel",
   message: "Cuéntanos más",
 };
 
 export const MAX_MESSAGE_CHARS = 500;
+export const MAX_ORDER_CHARS = 1500;
 
 export type ContactErrors = Partial<Record<ContactField, string>>;
 
@@ -84,6 +90,8 @@ export interface ContactPayload {
   date: string;
   guests?: number;
   fulfillment: Fulfillment;
+  /** Resumen del pastel del personalizador, si lo hay. */
+  order?: string;
   message: string;
 }
 
@@ -208,6 +216,10 @@ export function validateContact(
     errors.fulfillment = "Elige entrega o recoger.";
   }
 
+  if (values.order.length > MAX_ORDER_CHARS) {
+    errors.order = `El resumen del pastel admite hasta ${MAX_ORDER_CHARS} caracteres.`;
+  }
+
   if (values.message.length > MAX_MESSAGE_CHARS) {
     errors.message = `El mensaje admite hasta ${MAX_MESSAGE_CHARS} caracteres.`;
   }
@@ -218,6 +230,7 @@ export function validateContact(
 /** Limpia y convierte valores ya validados. Llamar solo si `validateContact` fue válido. */
 export function toContactPayload(values: ContactValues): ContactPayload {
   const guests = values.guests.trim();
+  const order = values.order.trim();
   return {
     name: values.name.trim(),
     phone: normalizePhone(values.phone),
@@ -226,6 +239,7 @@ export function toContactPayload(values: ContactValues): ContactPayload {
     date: values.date,
     ...(guests ? { guests: Number(guests) } : {}),
     fulfillment: values.fulfillment as Fulfillment,
+    ...(order ? { order } : {}),
     message: values.message.trim(),
   };
 }
@@ -247,5 +261,6 @@ export function buildContactSummary(
   if (data.guests) rows.push(`Personas: ${data.guests}`);
   rows.push(`Entrega: ${FULFILLMENT_LABELS[data.fulfillment]}`);
   if (data.message) rows.push(`Notas: ${data.message}`);
+  if (data.order) rows.push("", data.order);
   return rows.join("\n");
 }

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Catering } from "./components/Catering/Catering";
 import { Contact } from "./components/Contact/Contact";
 import { ContactForm } from "./components/ContactForm/ContactForm";
@@ -15,6 +16,7 @@ import { Testimonials } from "./components/Testimonials/Testimonials";
 import { WhatsAppButton } from "./components/WhatsAppButton/WhatsAppButton";
 import { site } from "./content/site";
 import { useBrandTheme } from "./hooks/useBrandTheme";
+import { useContactForm } from "./hooks/useContactForm";
 import { buildPackageMessage } from "./lib/catering";
 import { resolveFeatured } from "./lib/featured";
 import { buildHeroFacts } from "./lib/hero";
@@ -37,6 +39,18 @@ const submitContact = createSubmitContact(
 
 function App() {
   useBrandTheme(site.brand.colors);
+  // El formulario vive aquí para que "Solicitar este pastel" pueda precargarlo.
+  const quoteForm = useContactForm({
+    minLeadDays: site.orders.minLeadDays,
+    timeZone: site.hours.timeZone,
+    submit: submitContact,
+    whatsappPhone: site.orders.whatsapp,
+  });
+  const [quoteFocus, setQuoteFocus] = useState(0);
+  const requestQuote = (summary: string) => {
+    quoteForm.prefill({ type: "pastel", order: summary });
+    setQuoteFocus((count) => count + 1);
+  };
   const links = buildNavLinks(site);
   const menuLink = links.find((link) => link.id === SECTION_IDS.menu);
   const whatsappUrl = buildWhatsAppUrl(
@@ -101,6 +115,7 @@ function App() {
             depositPercent={site.orders.depositPercent}
             notes={[site.orders.paymentNote]}
             ctaLabel="Pedir por WhatsApp"
+            onRequest={requestQuote}
             buildHref={(summary) =>
               buildWhatsAppUrl(
                 site.orders.whatsapp,
@@ -163,10 +178,9 @@ function App() {
           <ContactForm
             id={SECTION_IDS.quote}
             copy={site.contactForm}
+            form={quoteForm}
             minLeadDays={site.orders.minLeadDays}
-            timeZone={site.hours.timeZone}
-            submit={submitContact}
-            whatsappPhone={site.orders.whatsapp}
+            focusRequest={quoteFocus}
           />
         </Contact>
       </main>

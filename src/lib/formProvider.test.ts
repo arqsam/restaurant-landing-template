@@ -83,6 +83,20 @@ describe("construcción de la solicitud", () => {
     );
   });
 
+  it("el resumen del pastel viaja al correo en el campo 'pastel'", () => {
+    const withOrder = {
+      ...data,
+      order: "Pastel personalizado\nTamaño: Mediano",
+    };
+    expect(buildFields(withOrder).pastel).toBe(
+      "Pastel personalizado\nTamaño: Mediano",
+    );
+    expect("pastel" in buildFields(data)).toBe(false);
+    expect(buildRequest(web3, withOrder).body).toMatchObject({
+      pastel: "Pastel personalizado\nTamaño: Mediano",
+    });
+  });
+
   it("Web3Forms envía la llave y el asunto al endpoint de envío", () => {
     const { url, body } = buildRequest(web3, data);
     expect(url).toBe("https://api.web3forms.com/submit");

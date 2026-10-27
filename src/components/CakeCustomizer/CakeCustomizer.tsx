@@ -17,6 +17,8 @@ interface CakeCustomizerProps {
   /** Enlace de WhatsApp para enviar el pedido con el resumen en texto. */
   buildHref: (summaryText: string) => string;
   ctaLabel: string;
+  /** Lleva el pastel armado al formulario de cotización; sin esto no se muestra el botón. */
+  onRequest?: (summaryText: string) => void;
 }
 
 interface ChoiceProps {
@@ -59,6 +61,7 @@ export function CakeCustomizer({
   notes = [],
   buildHref,
   ctaLabel,
+  onRequest,
 }: CakeCustomizerProps) {
   const uid = useId();
   const { selection, quote, errors } = builder;
@@ -379,6 +382,21 @@ export function CakeCustomizer({
               {ctaLabel}
             </button>
           )}
+
+          {onRequest ? (
+            <button
+              type="button"
+              className={styles.secondary}
+              aria-disabled={builder.isValid ? undefined : "true"}
+              onClick={() =>
+                builder.isValid
+                  ? onRequest(builder.summaryText)
+                  : builder.attempt()
+              }
+            >
+              {customizer.requestLabel}
+            </button>
+          ) : null}
 
           <ul className={styles.notes}>
             <li>El precio es un estimado; lo confirmamos por WhatsApp.</li>

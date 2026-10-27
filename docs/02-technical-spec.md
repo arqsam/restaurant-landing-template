@@ -39,7 +39,9 @@ Los campos obligatorios se validan en compilación con TypeScript, y `src/conten
 - `useOrderBuilder` guarda la selección (`sizeId`, `flavorId`, `fillingId`, `decorationId`, `paletteId`, `dedication`) y expone si está completa. Los identificadores se validan contra la configuración; un id desconocido se ignora.
 - `calcQuote` = precio del tamaño + extras de sabor, relleno, decoración y dedicatoria. `deposit = round(total × depositPercent / 100)` y `balance = total − deposit`, en pesos enteros.
 - `buildOrderSummary` produce el mismo texto para WhatsApp y para el correo: producto, opciones, dedicatoria, fecha, total estimado, anticipo y saldo, y la leyenda "Estimado: el precio final lo confirma el negocio".
-- Al pulsar "Solicitar este pastel", se desplaza al formulario con tipo "pastel" y el resumen precargado (editable).
+- Al pulsar "Solicitar este pastel" (solo con la selección completa), el diálogo se cierra, la página se desplaza al formulario y `useContactForm.prefill` carga el tipo "pastel" y el resumen en el campo editable "Tu pastel", sin borrar lo que la persona ya hubiera escrito. El foco queda en el primer dato por completar.
+- El resumen viaja en tres lugares: el campo "Tu pastel" del formulario, el mensaje de "Continuar por WhatsApp" (tras las notas) y el correo (campo `pastel`). Se puede quitar de la solicitud con "Quitar este pastel de la solicitud".
+- El estado del formulario se crea en `App` y se pasa a `ContactForm`; así el personalizador y el formulario comparten una sola solicitud.
 
 ## Plan de pruebas
 | Área | Pruebas |

@@ -73,6 +73,7 @@ export function buildFields(data: ContactPayload) {
   if (data.email) fields.email = data.email;
   if (data.date) fields.fecha = data.date;
   if (data.guests) fields.personas = data.guests;
+  if (data.order) fields.pastel = data.order;
   if (data.message) fields.mensaje = data.message;
   return fields;
 }

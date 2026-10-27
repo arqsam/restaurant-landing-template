@@ -6,7 +6,7 @@ import {
   type ReactNode,
 } from "react";
 import type { ContactFormCopy } from "../../content/types";
-import { useContactForm } from "../../hooks/useContactForm";
+import type { ContactFormState } from "../../hooks/useContactForm";
 import {
   CONTACT_FIELD_LABELS,
   CONTACT_TYPES,
@@ -14,21 +14,22 @@ import {
   FULFILLMENTS,
   FULFILLMENT_LABELS,
   MAX_MESSAGE_CHARS,
+  MAX_ORDER_CHARS,
   type ContactField,
-  type ContactPayload,
-  type SubmitResult,
 } from "../../lib/contactForm";
 import styles from "./ContactForm.module.css";
 
 interface ContactFormProps {
   id: string;
   copy: ContactFormCopy;
+  /** Estado del formulario; vive fuera para que el personalizador pueda precargarlo. */
+  form: ContactFormState;
   minLeadDays: number;
-  timeZone?: string;
-  submit: (data: ContactPayload) => Promise<SubmitResult>;
-  whatsappPhone: string;
-  /** Reloj inyectable (pruebas). */
-  now?: () => Date;
+  /**
+   * Cada vez que cambia (y no es 0) la página lleva a esta sección y enfoca el
+   * primer dato por completar; lo usa "Solicitar este pastel".
+   */
+  focusRequest?: number;
 }
 
 interface FieldProps {
@@ -76,23 +77,15 @@ function Field({ id, label, optional, hint, error, children }: FieldProps) {
 export function ContactForm({
   id,
   copy,
+  form,
   minLeadDays,
-  timeZone,
-  submit,
-  whatsappPhone,
-  now,
+  focusRequest = 0,
 }: ContactFormProps) {
   const uid = useId();
   const titleId = `${id}-titulo`;
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const form = useContactForm({
-    minLeadDays,
-    timeZone,
-    submit,
-    whatsappPhone,
-    now,
-  });
   const { values, errors, status, minDate, whatsappHref } = form;
   const finished = status === "success" || status === "error";
 
@@ -100,6 +93,30 @@ export function ContactForm({
   useEffect(() => {
     if (finished) panelRef.current?.focus();
   }, [finished]);
+
+  // Si llega una solicitud desde el personalizador: ir al formulario y enfocar
+  // el primer dato que falte (o el resumen del pastel si ya está todo).
+  useEffect(() => {
+    if (!focusRequest) return;
+    wrapperRef.current?.scrollIntoView?.();
+    const root = formRef.current;
+    const firstEmpty = (["name", "phone", "date"] as const)
+      .map((field) =>
+        root?.querySelector<HTMLInputElement>(`[data-field="${field}"]`),
+      )
+      .find((element) => element && element.value === "");
+    const target =
+      firstEmpty ?? root?.querySelector<HTMLElement>('[data-field="order"]');
+    target?.focus({ preventScroll: true });
+  }, [focusRequest]);
+
+  /** Quita el resumen del pastel y deja el foco en un campo que siga existiendo. */
+  const removeOrder = () => {
+    form.setField("order", "");
+    formRef.current
+      ?.querySelector<HTMLElement>('[data-field="message"]')
+      ?.focus();
+  };
 
   const fieldId = (field: ContactField) => `${uid}-${field}`;
   const label = CONTACT_FIELD_LABELS;
@@ -173,7 +190,7 @@ export function ContactForm({
   );
 
   return (
-    <div className={styles.wrapper} id={id}>
+    <div ref={wrapperRef} className={styles.wrapper} id={id}>
       <h3 id={titleId} className={styles.title}>
         {copy.title}
       </h3>
@@ -324,6 +341,38 @@ export function ContactForm({
               (value) => form.setField("fulfillment", value),
             )}
           </div>
+
+          {values.order ? (
+            <div className={styles.full}>
+              <Field
+                id={fieldId("order")}
+                label={label.order}
+                hint={copy.orderHint}
+                error={errors.order}
+              >
+                {(describedBy) => (
+                  <textarea
+                    id={fieldId("order")}
+                    className={`${styles.input} ${styles.order}`}
+                    rows={9}
+                    maxLength={MAX_ORDER_CHARS}
+                    value={values.order}
+                    onChange={(e) => form.setField("order", e.target.value)}
+                    aria-invalid={errors.order ? true : undefined}
+                    aria-describedby={describedBy}
+                    data-field="order"
+                  />
+                )}
+              </Field>
+              <button
+                type="button"
+                className={styles.linkButton}
+                onClick={removeOrder}
+              >
+                {copy.removeOrderLabel}
+              </button>
+            </div>
+          ) : null}
 
           <div className={styles.full}>
             <Field

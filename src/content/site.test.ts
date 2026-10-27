@@ -257,4 +257,8 @@ describe("site config (Mallow & Crumb)", () => {
     }
     expect(["web3forms", "formspree"]).toContain(site.contact.formProvider);
   });
+
+  it("el personalizador tiene el texto del botón que lleva el pastel al formulario", () => {
+    expect(site.customizer.requestLabel.trim().length).toBeGreaterThan(0);
+  });
 });

@@ -9,9 +9,11 @@ import { CakeCustomizer } from "./CakeCustomizer";
 function Harness({
   buildHref,
   customizer = site.customizer,
+  onRequest,
 }: {
   buildHref: (text: string) => string;
   customizer?: Customizer;
+  onRequest?: (text: string) => void;
 }) {
   const builder = useOrderBuilder(customizer, site.orders.depositPercent);
   return (
@@ -23,6 +25,7 @@ function Harness({
       notes={[site.orders.paymentNote]}
       buildHref={buildHref}
       ctaLabel="Pedir por WhatsApp"
+      onRequest={onRequest}
     />
   );
 }
@@ -233,5 +236,45 @@ describe("CakeCustomizer", () => {
     setup();
     expect(screen.getByText(/es un estimado/i)).toBeInTheDocument();
     expect(screen.getByText(site.orders.paymentNote)).toBeInTheDocument();
+  });
+
+  describe("solicitar cotización", () => {
+    function setupRequest() {
+      const user = userEvent.setup();
+      const onRequest = vi.fn();
+      render(
+        <Harness buildHref={() => "https://wa.me/1"} onRequest={onRequest} />,
+      );
+      return { user, onRequest };
+    }
+
+    const requestButton = () =>
+      screen.getByRole("button", { name: site.customizer.requestLabel });
+
+    it("sin onRequest no aparece el botón", () => {
+      setup();
+      expect(
+        screen.queryByRole("button", { name: site.customizer.requestLabel }),
+      ).toBeNull();
+    });
+
+    it("incompleto no envía el pastel y avisa qué falta", async () => {
+      const { user, onRequest } = setupRequest();
+      expect(requestButton()).toHaveAttribute("aria-disabled", "true");
+      await user.click(requestButton());
+      expect(onRequest).not.toHaveBeenCalled();
+      expect(screen.getByText(/completa:/i)).toBeInTheDocument();
+    });
+
+    it("completo entrega el resumen del pastel", async () => {
+      const { user, onRequest } = setupRequest();
+      await fillAll(user);
+      expect(requestButton()).not.toHaveAttribute("aria-disabled");
+      await user.click(requestButton());
+      expect(onRequest).toHaveBeenCalledTimes(1);
+      const text = onRequest.mock.calls[0][0] as string;
+      expect(text).toContain("Tamaño: Mediano (12 porciones)");
+      expect(text).toContain("Total estimado: $1,010");
+    });
   });
 });

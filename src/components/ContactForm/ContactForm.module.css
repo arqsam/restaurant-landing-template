@@ -233,3 +233,27 @@ textarea.input {
   flex-wrap: wrap;
   gap: var(--space-3);
 }
+
+/* Resumen del pastel que llega del personalizador */
+.order {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.linkButton {
+  margin-top: var(--space-2);
+  padding: var(--space-2) 0;
+  border: 0;
+  background: none;
+  color: var(--color-accent-text);
+  font: inherit;
+  font-size: var(--text-sm);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.linkButton:focus-visible {
+  outline: 3px solid var(--color-accent-text);
+  outline-offset: 2px;
+}
