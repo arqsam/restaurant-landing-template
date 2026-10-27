@@ -58,6 +58,18 @@ export const EMPTY_CONTACT: ContactValues = {
   website: "",
 };
 
+/** Etiquetas visibles de cada campo. */
+export const CONTACT_FIELD_LABELS: Record<ContactField, string> = {
+  name: "Nombre",
+  phone: "Tu WhatsApp",
+  email: "Correo",
+  type: "¿Qué necesitas?",
+  date: "Fecha del evento",
+  guests: "Personas",
+  fulfillment: "¿Cómo lo recibes?",
+  message: "Cuéntanos más",
+};
+
 export const MAX_MESSAGE_CHARS = 500;
 
 export type ContactErrors = Partial<Record<ContactField, string>>;

@@ -1,5 +1,6 @@
 import { Catering } from "./components/Catering/Catering";
 import { Contact } from "./components/Contact/Contact";
+import { ContactForm } from "./components/ContactForm/ContactForm";
 import { Faq } from "./components/Faq/Faq";
 import { CustomizerSection } from "./components/CustomizerSection/CustomizerSection";
 import { Featured } from "./components/Featured/Featured";
@@ -19,7 +20,20 @@ import { resolveFeatured } from "./lib/featured";
 import { buildHeroFacts } from "./lib/hero";
 import { buildItemOrderHref } from "./lib/itemOrder";
 import { SECTION_IDS, buildNavLinks } from "./lib/nav";
+import { createSubmitContact } from "./lib/formProvider";
 import { buildWhatsAppUrl } from "./lib/whatsapp";
+
+/**
+ * Envío del formulario. La llave puede venir de `VITE_FORM_KEY` (archivo .env.local
+ * o variables de Vercel); si no existe se usa la de `site.ts`.
+ */
+const submitContact = createSubmitContact(
+  {
+    formProvider: site.contact.formProvider,
+    formKey: import.meta.env.VITE_FORM_KEY || site.contact.formKey,
+  },
+  { debug: import.meta.env.DEV },
+);
 
 function App() {
   useBrandTheme(site.brand.colors);
@@ -146,6 +160,14 @@ function App() {
               items={site.faq.items}
             />
           ) : null}
+          <ContactForm
+            id={SECTION_IDS.quote}
+            copy={site.contactForm}
+            minLeadDays={site.orders.minLeadDays}
+            timeZone={site.hours.timeZone}
+            submit={submitContact}
+            whatsappPhone={site.orders.whatsapp}
+          />
         </Contact>
       </main>
 

@@ -122,6 +122,18 @@ describe("App", () => {
     expect(screen.queryByRole("group", { name: "Tamaño" })).toBeNull();
   });
 
+  it("el formulario de cotización vive dentro de Contacto, con su título y el botón de enviar", () => {
+    const { container } = render(<App />);
+    const contact = container.querySelector("section#contacto")!;
+    expect(contact.querySelector("#cotizar")).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { level: 3, name: site.contactForm.title }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: site.contactForm.submitLabel }),
+    ).toBeInTheDocument();
+  });
+
   it("incluye el botón flotante de WhatsApp con el mismo enlace", () => {
     render(<App />);
     expect(
