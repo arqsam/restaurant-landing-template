@@ -13,6 +13,8 @@ interface CustomizerSectionProps {
   notes?: string[];
   buildHref: (summaryText: string) => string;
   ctaLabel: string;
+  /** Se llama con el resumen al pedir cotización; el diálogo se cierra antes. */
+  onRequest?: (summaryText: string) => void;
 }
 
 /**
@@ -27,6 +29,7 @@ export function CustomizerSection({
   notes,
   buildHref,
   ctaLabel,
+  onRequest,
 }: CustomizerSectionProps) {
   const builder = useOrderBuilder(customizer, depositPercent);
   const [open, setOpen] = useState(false);
@@ -93,6 +96,14 @@ export function CustomizerSection({
           notes={notes}
           buildHref={buildHref}
           ctaLabel={ctaLabel}
+          onRequest={
+            onRequest
+              ? (summary) => {
+                  setOpen(false);
+                  onRequest(summary);
+                }
+              : undefined
+          }
         />
       </Dialog>
     </section>

@@ -1,4 +1,5 @@
 import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import App from "./App";
 import { site } from "./content/site";
@@ -132,6 +133,30 @@ describe("App", () => {
     expect(
       screen.getByRole("button", { name: site.contactForm.submitLabel }),
     ).toBeInTheDocument();
+  });
+
+  it("AC-13: 'Solicitar este pastel' lleva el pastel armado al formulario, como tipo pastel y editable", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(
+      screen.getByRole("button", { name: site.customizer.teaser.ctaLabel }),
+    );
+    await user.click(screen.getByRole("radio", { name: /mediano/i }));
+    await user.click(screen.getByRole("radio", { name: /red velvet/i }));
+    await user.click(screen.getByRole("radio", { name: /dulce de leche/i }));
+    await user.click(screen.getByRole("radio", { name: /floral/i }));
+    await user.click(
+      screen.getByRole("button", { name: site.customizer.requestLabel }),
+    );
+
+    expect(screen.queryByRole("dialog")).toBeNull();
+    const order = screen.getByLabelText(/^tu pastel$/i) as HTMLTextAreaElement;
+    expect(order.value).toContain("Tamaño: Mediano (12 porciones)");
+    expect(order.value).toContain("Total estimado: $1,010");
+    expect(
+      screen.getByRole("radio", { name: /pastel por encargo/i }),
+    ).toBeChecked();
+    expect(order).not.toHaveAttribute("readonly");
   });
 
   it("incluye el botón flotante de WhatsApp con el mismo enlace", () => {

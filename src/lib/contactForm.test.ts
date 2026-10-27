@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   EMPTY_CONTACT,
   MAX_MESSAGE_CHARS,
+  MAX_ORDER_CHARS,
   addDays,
   buildContactSummary,
   formatDateEs,
@@ -134,6 +135,16 @@ describe("validateContact", () => {
     ).toBeDefined();
   });
 
+  it("el resumen del pastel es opcional y tiene un límite de longitud", () => {
+    expect(check({ order: "" }).errors.order).toBeUndefined();
+    expect(
+      check({ order: "x".repeat(MAX_ORDER_CHARS) }).errors.order,
+    ).toBeUndefined();
+    expect(
+      check({ order: "x".repeat(MAX_ORDER_CHARS + 1) }).errors.order,
+    ).toBeDefined();
+  });
+
   it("un formulario vacío marca los campos obligatorios (la fecha pide tipo elegido)", () => {
     const { valid: ok, errors } = validateContact(EMPTY_CONTACT, rules);
     expect(ok).toBe(false);
@@ -162,6 +173,14 @@ describe("toContactPayload", () => {
       fulfillment: "recoger",
       message: "Sin nuez",
     });
+  });
+  it("incluye el resumen del pastel limpio, solo si lo hay", () => {
+    const withOrder = toContactPayload({
+      ...valid,
+      order: "  Pastel personalizado\nTamaño: Mediano  ",
+    });
+    expect(withOrder.order).toBe("Pastel personalizado\nTamaño: Mediano");
+    expect("order" in toContactPayload({ ...valid, order: "   " })).toBe(false);
   });
   it("no incluye personas si el campo está vacío", () => {
     expect("guests" in toContactPayload(valid)).toBe(false);
@@ -195,6 +214,23 @@ describe("buildContactSummary", () => {
     expect(text).not.toContain("Notas");
     expect(text).not.toContain("5512345678");
     expect(text).not.toContain("a@b.co");
+  });
+  it("agrega el resumen del pastel completo al final, tras las notas", () => {
+    const text = buildContactSummary(
+      toContactPayload({
+        ...valid,
+        message: "Sin nuez",
+        order: "Pastel personalizado\nTamaño: Mediano\nTotal estimado: $1,010",
+      }),
+    );
+    expect(
+      text.endsWith(
+        "Pastel personalizado\nTamaño: Mediano\nTotal estimado: $1,010",
+      ),
+    ).toBe(true);
+    expect(text.indexOf("Notas: Sin nuez")).toBeLessThan(
+      text.indexOf("Pastel personalizado"),
+    );
   });
   it("permite cambiar la línea inicial", () => {
     expect(

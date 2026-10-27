@@ -170,4 +170,68 @@ describe("useContactForm", () => {
     expect(result.current.values.name).toBe("");
     expect(result.current.whatsappHref).toBeNull();
   });
+
+  describe("prefill", () => {
+    it("conserva lo que la persona ya escribió y suma lo precargado", () => {
+      const { result } = setup();
+      fill(result, { name: "Ana", type: "catering" });
+      act(() =>
+        result.current.prefill({
+          type: "pastel",
+          order: "Pastel personalizado",
+        }),
+      );
+      expect(result.current.values.name).toBe("Ana");
+      expect(result.current.values.type).toBe("pastel");
+      expect(result.current.values.order).toBe("Pastel personalizado");
+    });
+
+    it("el resumen llega al envío y al enlace de WhatsApp", async () => {
+      const { result, spy } = setup();
+      fill(result);
+      act(() =>
+        result.current.prefill({
+          order: "Pastel personalizado\nTamaño: Mediano",
+        }),
+      );
+      await submit(result);
+      expect(spy.mock.calls[0][0].order).toBe(
+        "Pastel personalizado\nTamaño: Mediano",
+      );
+      const text = new URL(result.current.whatsappHref!).searchParams.get(
+        "text",
+      )!;
+      expect(text).toContain("Tamaño: Mediano");
+    });
+
+    it("después de un envío terminado empieza un formulario nuevo", async () => {
+      const { result } = setup();
+      fill(result);
+      await submit(result);
+      expect(result.current.status).toBe("success");
+      act(() => result.current.prefill({ type: "pastel", order: "Mi pastel" }));
+      expect(result.current.status).toBe("idle");
+      expect(result.current.values.name).toBe("");
+      expect(result.current.values.order).toBe("Mi pastel");
+      expect(result.current.whatsappHref).toBeNull();
+    });
+
+    it("se ignora mientras hay un envío en curso", async () => {
+      let finish: (r: SubmitResult) => void = () => {};
+      const { result } = setup(
+        () => new Promise<SubmitResult>((resolve) => (finish = resolve)),
+      );
+      fill(result);
+      let pending: Promise<unknown> = Promise.resolve();
+      act(() => {
+        pending = result.current.handleSubmit();
+      });
+      act(() => result.current.prefill({ order: "No debe entrar" }));
+      expect(result.current.values.order).toBe("");
+      await act(async () => {
+        finish({ ok: true });
+        await pending;
+      });
+    });
+  });
 });

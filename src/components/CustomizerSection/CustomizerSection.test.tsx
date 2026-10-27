@@ -1,10 +1,10 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { site } from "../../content/site";
 import { CustomizerSection } from "./CustomizerSection";
 
-function setup() {
+function setup(onRequest?: (text: string) => void) {
   const user = userEvent.setup();
   render(
     <CustomizerSection
@@ -14,6 +14,7 @@ function setup() {
       notes={[site.orders.paymentNote]}
       buildHref={(text) => `https://wa.me/1?text=${text.length}`}
       ctaLabel="Pedir por WhatsApp"
+      onRequest={onRequest}
     />,
   );
   return { user };
@@ -72,5 +73,21 @@ describe("CustomizerSection", () => {
     expect(screen.getByText("Total estimado").nextSibling).toHaveTextContent(
       "$780",
     );
+  });
+
+  it("al solicitar cotización cierra el diálogo y entrega el resumen", async () => {
+    const onRequest = vi.fn();
+    const { user } = setup(onRequest);
+    await user.click(openButton());
+    await user.click(screen.getByRole("radio", { name: /mediano/i }));
+    await user.click(screen.getByRole("radio", { name: /red velvet/i }));
+    await user.click(screen.getByRole("radio", { name: /dulce de leche/i }));
+    await user.click(screen.getByRole("radio", { name: /floral/i }));
+    await user.click(
+      screen.getByRole("button", { name: site.customizer.requestLabel }),
+    );
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(onRequest).toHaveBeenCalledTimes(1);
+    expect(onRequest.mock.calls[0][0]).toContain("Tamaño: Mediano");
   });
 });

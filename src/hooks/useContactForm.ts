@@ -15,6 +15,9 @@ import {
 } from "../lib/contactForm";
 import { buildWhatsAppUrl } from "../lib/whatsapp";
 
+/** Estado del formulario de cotización (lo comparte la página con el personalizador). */
+export type ContactFormState = ReturnType<typeof useContactForm>;
+
 export type ContactStatus = "idle" | "submitting" | "success" | "error";
 
 export interface UseContactFormOptions {
@@ -111,6 +114,26 @@ export function useContactForm({
     return null;
   }, [values, rules, submit]);
 
+  /**
+   * Carga valores desde fuera (p. ej. el pastel del personalizador). Conserva lo
+   * que la persona ya escribió; si el formulario ya se había enviado, empieza de cero.
+   */
+  const prefill = useCallback(
+    (change: Partial<ContactValues>) => {
+      if (status === "submitting") return;
+      if (status === "success" || status === "error") {
+        setValues({ ...EMPTY_CONTACT, ...change });
+        setAttempted(false);
+        setStatus("idle");
+        setErrorMessage(null);
+        setPayload(null);
+        return;
+      }
+      setValues((current) => ({ ...current, ...change }));
+    },
+    [status],
+  );
+
   const reset = useCallback(() => {
     setValues(EMPTY_CONTACT);
     setAttempted(false);
@@ -134,6 +157,7 @@ export function useContactForm({
     whatsappHref,
     setField,
     handleSubmit,
+    prefill,
     reset,
   };
 }

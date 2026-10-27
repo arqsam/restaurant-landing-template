@@ -126,6 +126,8 @@ export interface Customizer {
   intro?: string;
   /** Primera línea del mensaje de WhatsApp con el pastel armado. */
   orderIntro: string;
+  /** Botón que lleva el pastel armado al formulario de cotización. */
+  requestLabel: string;
   sizes: CakeSize[];
   flavors: CustomizerOption[];
   fillings: CustomizerOption[];
@@ -191,6 +193,9 @@ export interface ContactFormCopy {
   errorTitle: string;
   whatsappLabel: string;
   resetLabel: string;
+  /** Ayuda bajo el resumen del pastel que llega del personalizador. */
+  orderHint: string;
+  removeOrderLabel: string;
   privacyNote: string;
 }
 
