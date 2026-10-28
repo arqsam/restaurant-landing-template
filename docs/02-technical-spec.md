@@ -43,11 +43,21 @@ Los campos obligatorios se validan en compilación con TypeScript, y `src/conten
 - El resumen viaja en tres lugares: el campo "Tu pastel" del formulario, el mensaje de "Continuar por WhatsApp" (tras las notas) y el correo (campo `pastel`). Se puede quitar de la solicitud con "Quitar este pastel de la solicitud".
 - El estado del formulario se crea en `App` y se pasa a `ContactForm`; así el personalizador y el formulario comparten una sola solicitud.
 
+## SEO y datos estructurados
+- La página es una SPA: los rastreadores y las vistas previas de redes sociales (WhatsApp, Facebook, X) no ejecutan JavaScript, así que las etiquetas se escriben en el HTML **al compilar**, no con React.
+- `src/lib/seo.ts` genera desde `site.ts`: `<title>`, descripción, URL canónica, `theme-color`, Open Graph, tarjeta de Twitter y un bloque JSON-LD `schema.org` (`Bakery`, `Restaurant` o `FoodEstablishment` según `brand.type`) con nombre, dirección postal, teléfono, correo, horarios agrupados, mapa y enlace al menú.
+- `vite.config.ts` tiene un plugin (`transformIndexHtml`) que llama a `injectSeo` sobre `index.html`; funciona igual en `npm run dev` y en `npm run build`. También fija `lang="es-MX"`.
+- Configuración en `site.seo`: `siteUrl` (dominio público sin barra final), `locale`, `address` estructurada, `priceRange`, `geo` y `sameAs` opcionales, e `ogImage` (1200×630, JPG; si falta se usa la foto del hero). `address` repite a propósito la dirección de `contact.address` en campos separados porque Google los pide así; una prueba comprueba que coincidan.
+- El texto va escapado y el JSON-LD no puede cerrar la etiqueta `<script>` aunque un nombre contenga `</script>`.
+- `public/robots.txt` permite el rastreo. Al desplegar, `seo.siteUrl` debe cambiarse al dominio real; sin eso las URL canónica y de imagen apuntan al dominio de ejemplo.
+- Lighthouse (AC-01) se mide en producción, tras el despliegue.
+
 ## Plan de pruebas
 | Área | Pruebas |
 |---|---|
 | `useContactForm` | cada regla de validación, honeypot, estados, error de red |
 | Adaptador Web3Forms | construye el cuerpo correcto y traduce respuestas OK/error (con `fetch` simulado) |
+| `seo` | tipo de schema por giro, URL absolutas, horarios agrupados, opcionales omitidos, escape de HTML y de `</script>`, `injectSeo` sobre un `index.html` |
 | `buildWhatsAppUrl` | codificación de acentos y saltos de línea, número normalizado con 52 |
 | `isOpenNow` | dentro/fuera de horario, día cerrado, cruce de medianoche, zona horaria |
 | `calcQuote` | suma de extras, anticipo 50 % con redondeo, saldo, porcentaje distinto, opción sin extras |

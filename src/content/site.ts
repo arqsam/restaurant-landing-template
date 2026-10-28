@@ -1,4 +1,4 @@
-import type { SiteConfig } from "./types";
+import type { SiteConfig } from "./types.ts";
 
 // Configuración de ejemplo: "Mallow & Crumb", pastelería de marca FICTICIA.
 // Datos, dirección, teléfono y reseñas son de muestra.
@@ -13,6 +13,17 @@ export const site: SiteConfig = {
     title: "Mallow & Crumb | Pastelería y postres bajo pedido",
     description:
       "Pasteles personalizados, postres de vitrina y mesas de postres para tus eventos. Pide por WhatsApp o cotiza en línea.",
+    ogImage: "/images/og-image.jpg",
+    siteUrl: "https://mallowandcrumb.example",
+    locale: "es_MX",
+    address: {
+      street: "Calle Ejemplo 123, Col. Centro",
+      locality: "Ciudad de México",
+      region: "CDMX",
+      postalCode: "06000",
+      country: "MX",
+    },
+    priceRange: "$$",
   },
   nav: { menuLabel: "Pastelería", customizerLabel: "Arma tu pastel" },
   cateringIntro: {

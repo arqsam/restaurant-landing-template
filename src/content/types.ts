@@ -207,6 +207,15 @@ export interface SectionIntro {
   subtitle?: string;
 }
 
+export interface PostalAddress {
+  street: string;
+  locality: string;
+  region: string;
+  postalCode: string;
+  /** País en formato ISO de 2 letras: "MX". */
+  country: string;
+}
+
 export interface SiteConfig {
   brand: {
     name: string;
@@ -218,7 +227,19 @@ export interface SiteConfig {
   seo: {
     title: string;
     description: string;
+    /** Imagen para compartir (idealmente 1200×630, JPG). Si falta se usa la del hero. */
     ogImage?: string;
+    /** URL pública del sitio, sin barra final: "https://mallowandcrumb.example". */
+    siteUrl: string;
+    /** Idioma y país para Open Graph: "es_MX". */
+    locale: string;
+    /** Dirección estructurada para Google (la de `contact.address` es el texto que se muestra). */
+    address: PostalAddress;
+    /** Rango de precios: "$", "$$", "$$$". */
+    priceRange?: string;
+    geo?: { latitude: number; longitude: number };
+    /** Perfiles del negocio (Instagram, Facebook...). */
+    sameAs?: string[];
   };
   /** Textos cortos de la navegación que dependen del tipo de negocio. */
   nav: {
