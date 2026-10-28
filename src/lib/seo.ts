@@ -140,6 +140,27 @@ export function htmlLang(locale: string): string {
   return locale.replace("_", "-");
 }
 
+/**
+ * Precarga de la foto del hero. La página se dibuja con JavaScript, así que sin
+ * esto el navegador no descubre la imagen hasta que el script corre; con esto la
+ * baja en paralelo. Usa el mismo `srcSet` y `sizes` que la `<img>` para que
+ * elija la misma variante y no la descargue dos veces.
+ */
+export function buildHeroPreload(site: SiteConfig): string {
+  const { image } = site.hero;
+  const attrs = [
+    'rel="preload"',
+    'as="image"',
+    `href="${escapeHtml(image.src)}"`,
+  ];
+  if (image.srcSet) {
+    attrs.push(`imagesrcset="${escapeHtml(image.srcSet)}"`);
+    if (image.sizes) attrs.push(`imagesizes="${escapeHtml(image.sizes)}"`);
+  }
+  attrs.push('fetchpriority="high"');
+  return `<link ${attrs.join(" ")} />`;
+}
+
 /** Etiquetas `<head>` completas: título, descripción, canónica, Open Graph, Twitter y JSON-LD. */
 export function buildHeadTags(site: SiteConfig): string {
   const { seo, brand } = site;
@@ -150,6 +171,7 @@ export function buildHeadTags(site: SiteConfig): string {
 
   return [
     `<title>${escapeHtml(seo.title)}</title>`,
+    buildHeroPreload(site),
     meta("name", "description", seo.description),
     `<link rel="canonical" href="${escapeHtml(home)}" />`,
     meta("name", "theme-color", brand.colors.primary),

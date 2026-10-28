@@ -52,11 +52,20 @@ Los campos obligatorios se validan en compilación con TypeScript, y `src/conten
 - `public/robots.txt` permite el rastreo. Al desplegar, `seo.siteUrl` debe cambiarse al dominio real; sin eso las URL canónica y de imagen apuntan al dominio de ejemplo.
 - Lighthouse (AC-01) se mide en producción, tras el despliegue.
 
+## Rendimiento de imágenes (RNF-03)
+- Todas las fotos son WebP con `width` y `height` declarados (evitan saltos de diseño), `decoding="async"` y `loading="lazy"`; solo la foto del hero se carga de inmediato, con `fetchpriority="high"`.
+- Cada foto tiene variantes con `srcSet` y `sizes`: el hero en 720, 860, 1080, 1440 y 1920 px; la galería y el personalizador en 480 y 960; las miniaturas del menú en 240 y 480. La variante de 860 px existe para que un móvil común (375 px a 2x, o el que emula Lighthouse) no baje la de 1080 px.
+- Como la página se dibuja con JavaScript, el navegador no descubriría la foto del hero hasta ejecutar el script. Por eso `seo.ts` agrega al `<head>` un `<link rel="preload" as="image">` con el mismo `srcset` y `sizes` que la imagen.
+- `scripts/images.test.ts` revisa contra los archivos reales de `public/`: que todos sean WebP y existan, que el ancho y alto declarados coincidan con el archivo, que cada variante mida lo que dice su descriptor, que no sobre ninguna imagen, el presupuesto de peso por archivo según su ancho y la imagen para compartir (1200×630).
+- `npm run build && npm run weight` estima la primera carga del sitio compilado (HTML, CSS y JS en gzip más el hero que bajaría cada tipo de pantalla) y falla si pasa de 1.5 MB. No cuenta las imágenes lazy de más abajo.
+- Al sustituir las fotos por las de un cliente: exportar a WebP con las mismas variantes, actualizar `width`, `height` y `srcSet` en `site.ts` y correr `npm test` y `npm run weight`.
+
 ## Plan de pruebas
 | Área | Pruebas |
 |---|---|
 | `useContactForm` | cada regla de validación, honeypot, estados, error de red |
 | Adaptador Web3Forms | construye el cuerpo correcto y traduce respuestas OK/error (con `fetch` simulado) |
+| imágenes | tamaño real vs declarado, variantes de `srcSet`, formatos, imágenes sin usar, presupuesto de peso (`scripts/images.test.ts`) y atributos `width`/`height`/`loading` en la página |
 | `seo` | tipo de schema por giro, URL absolutas, horarios agrupados, opcionales omitidos, escape de HTML y de `</script>`, `injectSeo` sobre un `index.html` |
 | `buildWhatsAppUrl` | codificación de acentos y saltos de línea, número normalizado con 52 |
 | `isOpenNow` | dentro/fuera de horario, día cerrado, cruce de medianoche, zona horaria |

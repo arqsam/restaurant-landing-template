@@ -159,6 +159,27 @@ describe("App", () => {
     expect(order).not.toHaveAttribute("readonly");
   });
 
+  it("RNF-03: todas las imágenes declaran tamaño y texto alternativo; solo el hero se carga de inmediato", () => {
+    const { container } = render(<App />);
+    const images = Array.from(container.querySelectorAll("img"));
+    expect(images.length).toBeGreaterThan(10);
+    for (const image of images) {
+      expect(image, image.getAttribute("src") ?? "").toHaveAttribute("width");
+      expect(image).toHaveAttribute("height");
+      expect(image.getAttribute("alt")?.trim().length).toBeGreaterThan(0);
+    }
+    const hero = images.filter((image) => image.hasAttribute("fetchpriority"));
+    expect(hero).toHaveLength(1);
+    expect(hero[0]).toHaveAttribute("fetchpriority", "high");
+    expect(hero[0]).not.toHaveAttribute("loading", "lazy");
+    for (const image of images.filter((item) => item !== hero[0])) {
+      expect(image, image.getAttribute("src") ?? "").toHaveAttribute(
+        "loading",
+        "lazy",
+      );
+    }
+  });
+
   it("incluye el botón flotante de WhatsApp con el mismo enlace", () => {
     render(<App />);
     expect(
