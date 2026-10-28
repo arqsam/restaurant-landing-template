@@ -31,6 +31,14 @@ Recortadas a cuadrado y exportadas en WebP a 240 px y 480 px de lado.
 
 Recortadas a 4:5 y exportadas en WebP a 480 px y 960 px de ancho. Minimalista y Drip reutilizan fotos de la galería.
 
+## Imagen para compartir (`public/images/`)
+
+| Archivo        | Uso                                  | Origen                                                                                                   |
+| -------------- | ------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| `og-image.jpg` | Vista previa al compartir (1200×630) | Recorte de la foto del hero (autoría: **[Edgar Arroyo]**, Pexels, ver tabla de arriba), exportado a JPG. |
+
+El favicon (`public/favicon.svg`) es un dibujo propio de la plantilla.
+
 ## Antes de entregar el sitio a un cliente
 
 1. Sustituye las imágenes por las del negocio (mismo nombre de archivo o actualiza `src/content/site.ts`).

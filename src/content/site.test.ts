@@ -261,4 +261,43 @@ describe("site config (Mallow & Crumb)", () => {
   it("el personalizador tiene el texto del botón que lleva el pastel al formulario", () => {
     expect(site.customizer.requestLabel.trim().length).toBeGreaterThan(0);
   });
+
+  describe("SEO", () => {
+    const { seo } = site;
+
+    it("la URL del sitio es https y no termina en barra", () => {
+      expect(seo.siteUrl).toMatch(/^https:\/\/[^/\s]+$/);
+    });
+
+    it("el idioma tiene formato idioma_PAÍS", () => {
+      expect(seo.locale).toMatch(/^[a-z]{2}_[A-Z]{2}$/);
+    });
+
+    it("la dirección estructurada está completa y el país es un código de 2 letras", () => {
+      for (const [key, value] of Object.entries(seo.address)) {
+        expect(value.trim().length, key).toBeGreaterThan(0);
+      }
+      expect(seo.address.country).toMatch(/^[A-Z]{2}$/);
+    });
+
+    it("la dirección estructurada coincide con la que se muestra en el sitio", () => {
+      expect(site.contact.address).toContain(seo.address.street);
+    });
+
+    it("la imagen para compartir es una ruta del sitio", () => {
+      expect(seo.ogImage).toMatch(/^\//);
+    });
+
+    it("las coordenadas, si existen, son válidas", () => {
+      if (!seo.geo) return;
+      expect(Math.abs(seo.geo.latitude)).toBeLessThanOrEqual(90);
+      expect(Math.abs(seo.geo.longitude)).toBeLessThanOrEqual(180);
+    });
+
+    it("los perfiles, si existen, son enlaces https", () => {
+      for (const url of seo.sameAs ?? []) {
+        expect(url).toMatch(/^https:\/\//);
+      }
+    });
+  });
 });
