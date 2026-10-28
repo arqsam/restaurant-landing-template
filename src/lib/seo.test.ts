@@ -4,6 +4,7 @@ import type { SiteConfig } from "../content/types";
 import {
   absoluteUrl,
   buildHeadTags,
+  buildHeroPreload,
   buildJsonLd,
   buildOpeningHours,
   formatPhone,
@@ -188,6 +189,38 @@ describe("buildHeadTags", () => {
     });
     expect(hostile.match(/<script/g)).toHaveLength(1);
     expect(readJsonLd(hostile).name).toBe('Dulce</script><script>alert("x")');
+  });
+});
+
+describe("buildHeroPreload", () => {
+  it("precarga la foto del hero con el mismo srcset y sizes que la imagen", () => {
+    const tag = buildHeroPreload(site);
+    const { image } = site.hero;
+    expect(tag).toContain('rel="preload" as="image"');
+    expect(tag).toContain(`href="${image.src}"`);
+    expect(tag).toContain(`imagesrcset="${image.srcSet}"`);
+    expect(tag).toContain(`imagesizes="${image.sizes}"`);
+    expect(tag).toContain('fetchpriority="high"');
+  });
+
+  it("sin srcset solo lleva el href", () => {
+    const plain = buildHeroPreload({
+      ...site,
+      hero: {
+        ...site.hero,
+        image: { ...site.hero.image, srcSet: undefined },
+      },
+    });
+    expect(plain).toContain(`href="${site.hero.image.src}"`);
+    expect(plain).not.toContain("imagesrcset");
+  });
+
+  it("va dentro del head, justo después del título", () => {
+    const head = buildHeadTags(site);
+    expect(head.indexOf("<title>")).toBeLessThan(head.indexOf('rel="preload"'));
+    expect(head.indexOf('rel="preload"')).toBeLessThan(
+      head.indexOf('name="description"'),
+    );
   });
 });
 

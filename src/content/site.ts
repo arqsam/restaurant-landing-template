@@ -81,7 +81,7 @@ export const site: SiteConfig = {
     image: {
       src: "/images/hero-1080.webp",
       srcSet:
-        "/images/hero-720.webp 720w, /images/hero-1080.webp 1080w, /images/hero-1440.webp 1440w, /images/hero-1920.webp 1920w",
+        "/images/hero-720.webp 720w, /images/hero-860.webp 860w, /images/hero-1080.webp 1080w, /images/hero-1440.webp 1440w, /images/hero-1920.webp 1920w",
       sizes: "100vw",
       width: 1080,
       height: 1493,
