@@ -10,11 +10,10 @@ import type { ContactFormState } from "../../hooks/useContactForm";
 import {
   CONTACT_FIELD_LABELS,
   CONTACT_TYPES,
-  CONTACT_TYPE_LABELS,
   FULFILLMENTS,
-  FULFILLMENT_LABELS,
   MAX_MESSAGE_CHARS,
   MAX_ORDER_CHARS,
+  resolveContactLabels,
   type ContactField,
 } from "../../lib/contactForm";
 import styles from "./ContactForm.module.css";
@@ -120,6 +119,10 @@ export function ContactForm({
 
   const fieldId = (field: ContactField) => `${uid}-${field}`;
   const label = CONTACT_FIELD_LABELS;
+  const choiceLabels = resolveContactLabels({
+    type: copy.typeLabels,
+    fulfillment: copy.fulfillmentLabels,
+  });
   const needsDate = values.type !== "otro";
   const needsGuests = values.type === "catering";
 
@@ -282,7 +285,7 @@ export function ContactForm({
             {radios(
               "type",
               CONTACT_TYPES,
-              CONTACT_TYPE_LABELS,
+              choiceLabels.type,
               values.type,
               (value) => form.setField("type", value),
             )}
@@ -336,7 +339,7 @@ export function ContactForm({
             {radios(
               "fulfillment",
               FULFILLMENTS,
-              FULFILLMENT_LABELS,
+              choiceLabels.fulfillment,
               values.fulfillment,
               (value) => form.setField("fulfillment", value),
             )}

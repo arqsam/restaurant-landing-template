@@ -1,7 +1,9 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
+import { cateringSite } from "../src/content/samples/catering.ts";
 import { site } from "../src/content/site.ts";
+import type { SiteConfig } from "../src/content/types.ts";
 import {
   collectImages,
   jpegSize,
@@ -18,16 +20,23 @@ const fileOf = (url: string) => `${PUBLIC}${url}`;
 const sizeOf = (url: string) => statSync(fileOf(url)).size;
 const readWebp = (url: string) => webpSize(readFileSync(fileOf(url)));
 
-/** Todas las URL de imagen de la configuración (src y variantes de srcSet). */
-const images = collectImages(site);
-const urls = [
-  ...new Set(
-    images.flatMap((image) => [
-      image.src,
-      ...(image.srcSet ? parseSrcSet(image.srcSet).map((c) => c.url) : []),
-    ]),
-  ),
+/** Las dos configuraciones de ejemplo: cada una con sus propias fotos (AC-04). */
+const SITES: Array<{ name: string; config: SiteConfig }> = [
+  { name: "Mallow & Crumb", config: site },
+  { name: "Nerita Catering", config: cateringSite },
 ];
+
+/** Todas las URL de imagen de una configuración (src y variantes de srcSet). */
+function urlsOf(images: ReturnType<typeof collectImages>): string[] {
+  return [
+    ...new Set(
+      images.flatMap((image) => [
+        image.src,
+        ...(image.srcSet ? parseSrcSet(image.srcSet).map((c) => c.url) : []),
+      ]),
+    ),
+  ];
+}
 
 /** Peso máximo por archivo según su ancho en píxeles. */
 function budgetKb(width: number): number {
@@ -66,51 +75,78 @@ describe("helpers de imágenes", () => {
   });
 });
 
-describe("imágenes del sitio", () => {
-  it("la configuración tiene imágenes y todas se encontraron", () => {
-    expect(images.length).toBeGreaterThan(20);
-  });
+for (const { name, config } of SITES) {
+  describe(`imágenes del sitio: ${name}`, () => {
+    const images = collectImages(config);
+    const urls = urlsOf(images);
 
-  it("todas son WebP", () => {
-    for (const url of urls) expect(url, url).toMatch(/\.webp$/);
-  });
+    it("la configuración tiene imágenes y todas se encontraron", () => {
+      expect(images.length).toBeGreaterThan(10);
+    });
 
-  it("todos los archivos existen", () => {
-    for (const url of urls) expect(() => sizeOf(url), url).not.toThrow();
-  });
+    it("todas son WebP", () => {
+      for (const url of urls) expect(url, url).toMatch(/\.webp$/);
+    });
 
-  it("todas tienen texto alternativo", () => {
-    for (const image of images) {
-      expect(image.alt.trim().length, image.path).toBeGreaterThan(0);
-    }
-  });
+    it("todos los archivos existen", () => {
+      for (const url of urls) expect(() => sizeOf(url), url).not.toThrow();
+    });
 
-  it("el ancho y alto declarados coinciden con el archivo real de src", () => {
-    for (const image of images) {
-      const real = readWebp(image.src);
-      expect({ width: image.width, height: image.height }, image.path).toEqual(
-        real,
-      );
-    }
-  });
-
-  it("cada variante de srcSet mide lo que dice su descriptor y conserva la proporción", () => {
-    for (const image of images) {
-      if (!image.srcSet) continue;
-      const ratio = image.height / image.width;
-      for (const candidate of parseSrcSet(image.srcSet)) {
-        const real = readWebp(candidate.url);
-        expect(real.width, candidate.url).toBe(candidate.width);
-        expect(
-          Math.abs(real.height - candidate.width * ratio),
-          candidate.url,
-        ).toBeLessThanOrEqual(2);
+    it("todas tienen texto alternativo", () => {
+      for (const image of images) {
+        expect(image.alt.trim().length, image.path).toBeGreaterThan(0);
       }
-    }
-  });
+    });
 
-  it("no sobra ninguna imagen en public/images (todas se usan)", () => {
-    const used = new Set([...urls, site.seo.ogImage]);
+    it("el ancho y alto declarados coinciden con el archivo real de src", () => {
+      for (const image of images) {
+        const real = readWebp(image.src);
+        expect(
+          { width: image.width, height: image.height },
+          image.path,
+        ).toEqual(real);
+      }
+    });
+
+    it("cada variante de srcSet mide lo que dice su descriptor y conserva la proporción", () => {
+      for (const image of images) {
+        if (!image.srcSet) continue;
+        const ratio = image.height / image.width;
+        for (const candidate of parseSrcSet(image.srcSet)) {
+          const real = readWebp(candidate.url);
+          expect(real.width, candidate.url).toBe(candidate.width);
+          expect(
+            Math.abs(real.height - candidate.width * ratio),
+            candidate.url,
+          ).toBeLessThanOrEqual(2);
+        }
+      }
+    });
+
+    it("ningún archivo pasa su presupuesto de peso según su ancho", () => {
+      for (const url of urls) {
+        const { width } = readWebp(url);
+        expect(sizeOf(url) / KB, url).toBeLessThanOrEqual(budgetKb(width));
+      }
+    });
+
+    it("el hero que baja un móvil común pesa menos de 120 KB (375 px a 2x, 414 px a 2x y el móvil que emula Lighthouse)", () => {
+      const candidates = parseSrcSet(config.hero.image.srcSet!);
+      for (const needed of [375 * 2, 414 * 2, Math.ceil(412 * 1.75)]) {
+        const chosen = pickCandidate(candidates, needed);
+        expect(sizeOf(chosen.url) / KB, `${needed}px`).toBeLessThan(120);
+      }
+    });
+  });
+}
+
+describe("imágenes de public/images", () => {
+  it("no sobra ninguna (cada archivo lo usa alguna de las configuraciones)", () => {
+    const used = new Set<string>();
+    for (const { config } of SITES) {
+      for (const url of urlsOf(collectImages(config))) used.add(url);
+      if (config.seo.ogImage) used.add(config.seo.ogImage);
+    }
     const found: string[] = [];
     const walk = (dir: string, prefix: string) => {
       for (const name of readdirSync(dir)) {
@@ -123,30 +159,24 @@ describe("imágenes del sitio", () => {
     expect(found.filter((url) => !used.has(url))).toEqual([]);
   });
 
-  it("ningún archivo pasa su presupuesto de peso según su ancho", () => {
-    for (const url of urls) {
-      const { width } = readWebp(url);
-      expect(sizeOf(url) / KB, url).toBeLessThanOrEqual(budgetKb(width));
-    }
-  });
-
-  it("el hero que baja un móvil común pesa menos de 120 KB (375 px a 2x, 414 px a 2x y el móvil que emula Lighthouse)", () => {
-    const candidates = parseSrcSet(site.hero.image.srcSet!);
-    for (const needed of [375 * 2, 414 * 2, Math.ceil(412 * 1.75)]) {
-      const chosen = pickCandidate(candidates, needed);
-      expect(sizeOf(chosen.url) / KB, `${needed}px`).toBeLessThan(120);
-    }
+  it("las dos configuraciones no comparten archivos de imagen", () => {
+    const [first, second] = SITES.map(({ config }) =>
+      urlsOf(collectImages(config)),
+    );
+    expect(first!.filter((url) => second!.includes(url))).toEqual([]);
   });
 });
 
-describe("imagen para compartir", () => {
-  const og = site.seo.ogImage!;
+for (const { name, config } of SITES) {
+  describe(`imagen para compartir: ${name}`, () => {
+    const og = config.seo.ogImage!;
 
-  it("mide 1200×630 y pesa menos de 250 KB", () => {
-    expect(jpegSize(readFileSync(fileOf(og)))).toEqual({
-      width: 1200,
-      height: 630,
+    it("mide 1200×630 y pesa menos de 250 KB", () => {
+      expect(jpegSize(readFileSync(fileOf(og)))).toEqual({
+        width: 1200,
+        height: 630,
+      });
+      expect(sizeOf(og) / KB).toBeLessThan(250);
     });
-    expect(sizeOf(og) / KB).toBeLessThan(250);
   });
-});
+}

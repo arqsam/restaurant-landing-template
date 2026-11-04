@@ -40,7 +40,7 @@ export function buildNavLinks(
     { id: SECTION_IDS.menu, label: nav.menuLabel, enabled: true },
     {
       id: SECTION_IDS.customizer,
-      label: nav.customizerLabel,
+      label: nav.customizerLabel ?? "Personaliza",
       enabled: sections.customizer,
     },
     { id: SECTION_IDS.catering, label: "Catering", enabled: sections.catering },

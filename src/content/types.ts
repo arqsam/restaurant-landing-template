@@ -197,6 +197,14 @@ export interface ContactFormCopy {
   orderHint: string;
   removeOrderLabel: string;
   privacyNote: string;
+  /**
+   * Etiquetas de "¿Qué necesitas?" si el negocio no vende pasteles. Las claves
+   * son ids internos: `pastel` = pedido por encargo, `catering` = evento (pide
+   * personas y fecha) y `otro`. Lo que no se defina usa el texto de la plantilla.
+   */
+  typeLabels?: Partial<Record<"pastel" | "catering" | "otro", string>>;
+  /** Etiquetas de "¿Cómo lo recibes?" (p. ej. "Recoger en cocina"). */
+  fulfillmentLabels?: Partial<Record<"entrega" | "recoger", string>>;
 }
 
 export interface SectionIntro {
@@ -245,8 +253,8 @@ export interface SiteConfig {
   nav: {
     /** Etiqueta del enlace al menú o catálogo: "Menú", "Pastelería", "Carta"... */
     menuLabel: string;
-    /** Etiqueta del enlace al personalizador: "Arma tu pastel", "Diseña tu pedido"... */
-    customizerLabel: string;
+    /** Etiqueta del enlace al personalizador: "Arma tu pastel", "Diseña tu pedido"... Solo si ese módulo está activo. */
+    customizerLabel?: string;
   };
   /** Encabezado editorial de la sección de menú o catálogo. */
   menuIntro: SectionIntro;
@@ -272,11 +280,18 @@ export interface SiteConfig {
     subtitle: string;
     image: HeroImage;
     ctaLabel: string;
+    /**
+     * Cómo se ve el hero. "light" (por defecto): foto suavizada bajo un velo
+     * del color de fondo y texto oscuro. "dark": foto nítida con un degradado
+     * oscuro solo del lado del texto, que va en claro; para marcas sobrias.
+     */
+    tone?: "light" | "dark";
   };
   menu: MenuCategory[];
   /** Favoritos de la casa: encabezado editorial y ids de platillos del menú. */
   featured: SectionIntro & { itemIds: string[] };
-  customizer: Customizer;
+  /** Datos del personalizador. Solo hacen falta si `sections.customizer` es true. */
+  customizer?: Customizer;
   packages: CateringPackage[];
   /** Bebidas que se ofrecen como complemento de los paquetes (opcional). */
   beverages?: MenuCategory;
@@ -310,3 +325,6 @@ export interface SiteConfig {
     formKey: string;
   };
 }
+
+/** Configuración con el personalizador definido (la de la pastelería de ejemplo). */
+export type CustomizableSiteConfig = SiteConfig & { customizer: Customizer };

@@ -8,6 +8,7 @@ import {
   formatDateEs,
   minEventDate,
   normalizePhone,
+  resolveContactLabels,
   toContactPayload,
   todayISO,
   validateContact,
@@ -238,5 +239,58 @@ describe("buildContactSummary", () => {
         "Buenas tardes",
       ),
     ).toBe(true);
+  });
+});
+
+describe("resolveContactLabels", () => {
+  it("sin cambios usa los textos de la plantilla", () => {
+    const labels = resolveContactLabels();
+    expect(labels.type.pastel).toBe("Pastel por encargo");
+    expect(labels.type.catering).toBe("Catering o mesa de postres");
+    expect(labels.fulfillment.recoger).toBe("Recoger en tienda");
+  });
+
+  it("cambia solo lo que el negocio define y conserva lo demás", () => {
+    const labels = resolveContactLabels({
+      type: { catering: "Evento con barra de mariscos" },
+      fulfillment: { recoger: "Recoger en cocina" },
+    });
+    expect(labels.type.catering).toBe("Evento con barra de mariscos");
+    expect(labels.type.pastel).toBe("Pastel por encargo");
+    expect(labels.fulfillment.recoger).toBe("Recoger en cocina");
+    expect(labels.fulfillment.entrega).toBe("Entrega a domicilio");
+  });
+
+  it("ignora los textos vacíos", () => {
+    const labels = resolveContactLabels({ type: { otro: "   " } });
+    expect(labels.type.otro).toBe("Otro");
+  });
+});
+
+describe("etiquetas del negocio en el payload y el resumen", () => {
+  const labels = resolveContactLabels({
+    type: { catering: "Evento con barra de mariscos" },
+    fulfillment: { recoger: "Recoger en cocina" },
+  });
+
+  it("el payload lleva las etiquetas solo si se le pasan", () => {
+    const withLabels = toContactPayload(
+      { ...valid, type: "catering", guests: "30" },
+      labels,
+    );
+    expect(withLabels.typeLabel).toBe("Evento con barra de mariscos");
+    expect(withLabels.fulfillmentLabel).toBe("Recoger en cocina");
+    const without = toContactPayload(valid);
+    expect("typeLabel" in without).toBe(false);
+    expect("fulfillmentLabel" in without).toBe(false);
+  });
+
+  it("el resumen de WhatsApp usa las etiquetas del negocio", () => {
+    const text = buildContactSummary(
+      toContactPayload({ ...valid, type: "catering", guests: "30" }, labels),
+    );
+    expect(text).toContain("Tipo: Evento con barra de mariscos");
+    expect(text).toContain("Entrega: Recoger en cocina");
+    expect(text).not.toContain("mesa de postres");
   });
 });

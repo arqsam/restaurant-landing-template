@@ -1,9 +1,11 @@
 # 02 — Especificación técnica (v1.2, nicho restaurantes)
 
 ## Stack
+
 React 19 · TypeScript (strict) · Vite · Vitest + Testing Library · ESLint · GitHub Actions · Vercel. Decisiones en [ADR 0001](./adr/0001-react-vite-ts.md), [ADR 0002](./adr/0002-content-as-config.md) y [ADR 0003](./adr/0003-formulario-de-contacto.md) y [ADR 0004](./adr/0004-personalizador-y-anticipo.md).
 
 ## Estructura propuesta
+
 ```
 src/
   content/site.ts            # única fuente de contenido y marca (tipo SiteConfig)
@@ -24,11 +26,13 @@ src/
 ```
 
 ## Contrato de configuración
+
 La fuente de verdad es [`src/content/types.ts`](../src/content/types.ts) (`SiteConfig`); el contenido de ejemplo está en `src/content/site.ts`. Incluye marca, SEO, secciones activables, menú con categorías y `id` por platillo, destacados, personalizador de pedidos, paquetes de catering, cómo pedir, galería, reseñas (con la marca `isSample`), FAQ, horarios, pedidos (WhatsApp, anticipación, porcentaje de anticipo) y contacto.
 
 Los campos obligatorios se validan en compilación con TypeScript, y `src/content/site.test.ts` comprueba las reglas que el tipo no puede expresar (ids únicos, precios enteros positivos, destacados existentes, formato de horas, WhatsApp válido, anticipo entre 1 y 100).
 
 ## Flujo del formulario de cotización
+
 1. El usuario llena el formulario; `useContactForm` valida por campo (nombre ≥ 2 caracteres, WhatsApp de 10 dígitos, correo opcional pero válido si se escribe, fecha ≥ hoy + `minLeadDays`, personas ≥ 1 para catering). El WhatsApp acepta separadores y prefijo `52`, `+52` o `521`. La fecha es obligatoria para pastel y catering (opcional para "otro") y las personas son obligatorias solo en catering. Los errores aparecen tras el primer intento de envío y se actualizan al escribir. La lógica pura vive en `src/lib/contactForm.ts` y el estado en `src/hooks/useContactForm.ts`, que recibe el adaptador como parámetro. El adaptador vive en `src/lib/formProvider.ts` (Web3Forms y Formspree), nunca lanza y devuelve siempre `SubmitResult`; mientras la llave sea la de plantilla no hace ninguna petición y el formulario ofrece WhatsApp. La llave puede definirse con `VITE_FORM_KEY` (ver `.env.example`) sin tocar `site.ts`.
 2. Si hay errores, se muestran junto al campo con `aria-describedby` y el foco va al primero.
 3. Si el honeypot tiene contenido, se simula éxito sin enviar.
@@ -36,6 +40,7 @@ Los campos obligatorios se validan en compilación con TypeScript, y `src/conten
 5. En `success` y en `error` se muestra un botón "Continuar por WhatsApp" cuyo mensaje resume tipo, fecha, personas y notas. En `error` el texto aclara que la solicitud no se registró por correo.
 
 ## Personalizador y anticipo
+
 - `useOrderBuilder` guarda la selección (`sizeId`, `flavorId`, `fillingId`, `decorationId`, `paletteId`, `dedication`) y expone si está completa. Los identificadores se validan contra la configuración; un id desconocido se ignora.
 - `calcQuote` = precio del tamaño + extras de sabor, relleno, decoración y dedicatoria. `deposit = round(total × depositPercent / 100)` y `balance = total − deposit`, en pesos enteros.
 - `buildOrderSummary` produce el mismo texto para WhatsApp y para el correo: producto, opciones, dedicatoria, fecha, total estimado, anticipo y saldo, y la leyenda "Estimado: el precio final lo confirma el negocio".
@@ -44,6 +49,7 @@ Los campos obligatorios se validan en compilación con TypeScript, y `src/conten
 - El estado del formulario se crea en `App` y se pasa a `ContactForm`; así el personalizador y el formulario comparten una sola solicitud.
 
 ## SEO y datos estructurados
+
 - La página es una SPA: los rastreadores y las vistas previas de redes sociales (WhatsApp, Facebook, X) no ejecutan JavaScript, así que las etiquetas se escriben en el HTML **al compilar**, no con React.
 - `src/lib/seo.ts` genera desde `site.ts`: `<title>`, descripción, URL canónica, `theme-color`, Open Graph, tarjeta de Twitter y un bloque JSON-LD `schema.org` (`Bakery`, `Restaurant` o `FoodEstablishment` según `brand.type`) con nombre, dirección postal, teléfono, correo, horarios agrupados, mapa y enlace al menú.
 - `vite.config.ts` tiene un plugin (`transformIndexHtml`) que llama a `injectSeo` sobre `index.html`; funciona igual en `npm run dev` y en `npm run build`. También fija `lang="es-MX"`.
@@ -53,6 +59,7 @@ Los campos obligatorios se validan en compilación con TypeScript, y `src/conten
 - Lighthouse (AC-01) se mide en producción, tras el despliegue.
 
 ## Rendimiento de imágenes (RNF-03)
+
 - Todas las fotos son WebP con `width` y `height` declarados (evitan saltos de diseño), `decoding="async"` y `loading="lazy"`; solo la foto del hero se carga de inmediato, con `fetchpriority="high"`.
 - Cada foto tiene variantes con `srcSet` y `sizes`: el hero en 720, 860, 1080, 1440 y 1920 px; la galería y el personalizador en 480 y 960; las miniaturas del menú en 240 y 480. La variante de 860 px existe para que un móvil común (375 px a 2x, o el que emula Lighthouse) no baje la de 1080 px.
 - Como la página se dibuja con JavaScript, el navegador no descubriría la foto del hero hasta ejecutar el script. Por eso `seo.ts` agrega al `<head>` un `<link rel="preload" as="image">` con el mismo `srcset` y `sizes` que la imagen.
@@ -60,18 +67,29 @@ Los campos obligatorios se validan en compilación con TypeScript, y `src/conten
 - `npm run build && npm run weight` estima la primera carga del sitio compilado (HTML, CSS y JS en gzip más el hero que bajaría cada tipo de pantalla) y falla si pasa de 1.5 MB. No cuenta las imágenes lazy de más abajo.
 - Al sustituir las fotos por las de un cliente: exportar a WebP con las mismas variantes, actualizar `width`, `height` y `srcSet` en `site.ts` y correr `npm test` y `npm run weight`.
 
+## Segunda configuración de ejemplo (AC-04)
+
+- `src/content/samples/catering.ts` es **Nerita Catering**, un negocio ficticio de barras de mariscos para eventos en CDMX, con otra paleta (azul noche y naranja quemado), otra carta, tres paquetes, su propia galería y su propio SEO. No usa el personalizador de pasteles (`sections.customizer: false`, sin `customizer`).
+- El hero de catering usa `hero.tone: "dark"`: foto nítida y sin velo claro, texto en claro y alineado a la izquierda. Conviene una foto de fondo oscuro con el motivo a la derecha; la del ejemplo (nigiri) se recompuso en un lienzo 16:9 para lograrlo. En escritorio el texto va a la izquierda sobre la zona oscura de la propia foto, con un sombreado muy suave (sin franja de color); en pantallas angostas la foto va arriba, completa, y el texto debajo sobre el color primario. Sin `tone` (o con `"light"`) el hero es el de siempre: foto suavizada bajo un velo del color de fondo.
+- Se ve con `npm run dev:catering` y se compila con `npm run build:catering` (modo `catering` de Vite). Sin modo se usa la pastelería. `src/content/active.ts` elige la configuración y `vite.config.ts` usa el mismo modo para el SEO inyectado. ADR 0007 explica la decisión.
+- Para que el segundo negocio no arrastrara textos de la pastelería, `customizer` y `nav.customizerLabel` son opcionales y el formulario acepta etiquetas propias en `contactForm.typeLabels` y `contactForm.fulfillmentLabels` (p. ej. "Evento con barra de mariscos", "Recoger en cocina"). Lo que no se defina usa los textos de la plantilla, y las etiquetas llegan igual al correo (asunto y campos) y al resumen de WhatsApp.
+- `npm run weight` lee las variantes del hero del `<link rel="preload">` del HTML compilado, así que mide la configuración que se construyó (`npm run build:catering && npm run weight` para la de catering).
+- Las pruebas de contrato de `src/content/contract.ts` (colores, ids únicos, precios, horarios, FAQ, SEO...) corren para las dos configuraciones; lo propio de cada una vive en `site.test.ts` y `samples/catering.test.ts`. `src/App.catering.test.tsx` renderiza la aplicación completa con la configuración de catering.
+
 ## Plan de pruebas
-| Área | Pruebas |
-|---|---|
-| `useContactForm` | cada regla de validación, honeypot, estados, error de red |
-| Adaptador Web3Forms | construye el cuerpo correcto y traduce respuestas OK/error (con `fetch` simulado) |
-| imágenes | tamaño real vs declarado, variantes de `srcSet`, formatos, imágenes sin usar, presupuesto de peso (`scripts/images.test.ts`) y atributos `width`/`height`/`loading` en la página |
-| `seo` | tipo de schema por giro, URL absolutas, horarios agrupados, opcionales omitidos, escape de HTML y de `</script>`, `injectSeo` sobre un `index.html` |
-| `buildWhatsAppUrl` | codificación de acentos y saltos de línea, número normalizado con 52 |
-| `isOpenNow` | dentro/fuera de horario, día cerrado, cruce de medianoche, zona horaria |
-| `calcQuote` | suma de extras, anticipo 50 % con redondeo, saldo, porcentaje distinto, opción sin extras |
-| `useOrderBuilder` / componente | no permite continuar sin lo obligatorio; resumen en vivo; id desconocido ignorado; límite de dedicatoria |
-| `formatMXN` | formato `$1,250.00` |
-| Menú | agrupa por categoría; etiquetas; botón "Pedir" con el nombre del platillo |
-| Accordion y navegación | teclado, `aria-expanded`, enlaces solo de secciones activas |
-| App | con las dos configuraciones de ejemplo renderiza lo activo y nada de lo desactivado |
+
+| Área                           | Pruebas                                                                                                                                                                                                                                          |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `useContactForm`               | cada regla de validación, honeypot, estados, error de red                                                                                                                                                                                        |
+| Adaptador Web3Forms            | construye el cuerpo correcto y traduce respuestas OK/error (con `fetch` simulado)                                                                                                                                                                |
+| segunda configuración          | contrato compartido por las dos marcas; Nerita sin textos de la pastelería, con tema legible (contraste), nav propia y SEO propio; `App` renderizada con Nerita (carta, paquetes, galería, formulario con etiquetas propias, sin personalizador) |
+| imágenes                       | tamaño real vs declarado, variantes de `srcSet`, formatos, imágenes sin usar, presupuesto de peso (`scripts/images.test.ts`) y atributos `width`/`height`/`loading` en la página                                                                 |
+| `seo`                          | tipo de schema por giro, URL absolutas, horarios agrupados, opcionales omitidos, escape de HTML y de `</script>`, `injectSeo` sobre un `index.html`                                                                                              |
+| `buildWhatsAppUrl`             | codificación de acentos y saltos de línea, número normalizado con 52                                                                                                                                                                             |
+| `isOpenNow`                    | dentro/fuera de horario, día cerrado, cruce de medianoche, zona horaria                                                                                                                                                                          |
+| `calcQuote`                    | suma de extras, anticipo 50 % con redondeo, saldo, porcentaje distinto, opción sin extras                                                                                                                                                        |
+| `useOrderBuilder` / componente | no permite continuar sin lo obligatorio; resumen en vivo; id desconocido ignorado; límite de dedicatoria                                                                                                                                         |
+| `formatMXN`                    | formato `$1,250.00`                                                                                                                                                                                                                              |
+| Menú                           | agrupa por categoría; etiquetas; botón "Pedir" con el nombre del platillo                                                                                                                                                                        |
+| Accordion y navegación         | teclado, `aria-expanded`, enlaces solo de secciones activas                                                                                                                                                                                      |
+| App                            | con las dos configuraciones de ejemplo renderiza lo activo y nada de lo desactivado                                                                                                                                                              |

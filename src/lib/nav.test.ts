@@ -61,6 +61,25 @@ describe("buildNavLinks", () => {
     expect(off).not.toContain(SECTION_IDS.customizer);
   });
 
+  it("sin etiqueta propia, el personalizador activo usa una genérica", () => {
+    const links = buildNavLinks({
+      sections: allOn,
+      nav: { menuLabel: "Carta" },
+    });
+    expect(links[1]).toEqual({
+      id: SECTION_IDS.customizer,
+      label: "Personaliza",
+    });
+  });
+
+  it("un negocio sin personalizador no necesita etiqueta para él", () => {
+    const labels = buildNavLinks({
+      sections: { ...allOn, customizer: false },
+      nav: { menuLabel: "Carta" },
+    }).map((l) => l.label);
+    expect(labels).toEqual(["Carta", "Catering", "Galería", "Contacto"]);
+  });
+
   it("horarios y preguntas no aparecen nunca en la navegación", () => {
     const ids = buildNavLinks({ sections: allOn, nav }).map((l) => l.id);
     expect(ids).not.toContain(SECTION_IDS.hours);

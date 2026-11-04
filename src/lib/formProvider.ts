@@ -59,7 +59,8 @@ export function isFormConfigured(formKey: string): boolean {
 }
 
 export function buildSubject(data: ContactPayload): string {
-  return `Nueva solicitud: ${CONTACT_TYPE_LABELS[data.type]} · ${data.name}`;
+  const type = data.typeLabel ?? CONTACT_TYPE_LABELS[data.type];
+  return `Nueva solicitud: ${type} · ${data.name}`;
 }
 
 /** Campos legibles que recibe el dueño en el correo (solo los que tienen valor). */
@@ -67,8 +68,8 @@ export function buildFields(data: ContactPayload) {
   const fields: Record<string, string | number> = {
     nombre: data.name,
     whatsapp: data.phone,
-    tipo: CONTACT_TYPE_LABELS[data.type],
-    entrega: FULFILLMENT_LABELS[data.fulfillment],
+    tipo: data.typeLabel ?? CONTACT_TYPE_LABELS[data.type],
+    entrega: data.fulfillmentLabel ?? FULFILLMENT_LABELS[data.fulfillment],
   };
   if (data.email) fields.email = data.email;
   if (data.date) fields.fecha = data.date;

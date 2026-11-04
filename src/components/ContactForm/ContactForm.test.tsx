@@ -2,9 +2,14 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { useState } from "react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+import { cateringSite } from "../../content/samples/catering";
 import { site } from "../../content/site";
 import { useContactForm } from "../../hooks/useContactForm";
-import type { ContactPayload, SubmitResult } from "../../lib/contactForm";
+import {
+  resolveContactLabels,
+  type ContactPayload,
+  type SubmitResult,
+} from "../../lib/contactForm";
 import { ContactForm } from "./ContactForm";
 
 const NOW = new Date("2026-10-26T18:00:00Z"); // 12:00 en Ciudad de México
@@ -289,5 +294,79 @@ describe("ContactForm", () => {
       expect(screen.getByLabelText(/^nombre/i)).toHaveValue("");
       expect(screen.getByLabelText(/^tu pastel$/i)).toHaveValue(ORDER);
     });
+  });
+});
+
+describe("ContactForm con las etiquetas de otro negocio (AC-04)", () => {
+  const copy = cateringSite.contactForm;
+  const labels = resolveContactLabels({
+    type: copy.typeLabels,
+    fulfillment: copy.fulfillmentLabels,
+  });
+
+  function CateringHarness({
+    submit,
+  }: {
+    submit: (data: ContactPayload) => Promise<SubmitResult>;
+  }) {
+    const form = useContactForm({
+      minLeadDays: 2,
+      timeZone: "America/Mexico_City",
+      submit,
+      whatsappPhone: cateringSite.orders.whatsapp,
+      labels,
+      now: () => NOW,
+    });
+    return <ContactForm id="cotizar" copy={copy} form={form} minLeadDays={2} />;
+  }
+
+  it("ofrece los tipos y formas de entrega del negocio, no los de la pastelería", () => {
+    render(<CateringHarness submit={() => Promise.resolve({ ok: true })} />);
+    expect(
+      screen.getByRole("radio", { name: "Evento con barra de mariscos" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("radio", { name: "Charolas o platillos por encargo" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("radio", { name: "Otra consulta" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("radio", { name: "Recoger en cocina" }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("radio", { name: /pastel|postres/i })).toBeNull();
+  });
+
+  it("las etiquetas del negocio llegan al envío y al resumen de WhatsApp", async () => {
+    const user = userEvent.setup();
+    const spy = vi.fn<(data: ContactPayload) => Promise<SubmitResult>>(() =>
+      Promise.resolve({ ok: true }),
+    );
+    render(<CateringHarness submit={spy} />);
+    await user.type(screen.getByLabelText(/^nombre/i), "Ana Pérez");
+    await user.type(screen.getByLabelText(/tu whatsapp/i), "55 1234 5678");
+    await user.click(
+      screen.getByRole("radio", { name: "Evento con barra de mariscos" }),
+    );
+    fireEvent.change(screen.getByLabelText(/fecha del evento/i), {
+      target: { value: "2026-11-05" },
+    });
+    await user.type(screen.getByLabelText(/^personas$/i), "40");
+    await user.click(screen.getByRole("radio", { name: "Recoger en cocina" }));
+    await user.click(screen.getByRole("button", { name: copy.submitLabel }));
+
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy.mock.calls[0]![0]).toMatchObject({
+      type: "catering",
+      typeLabel: "Evento con barra de mariscos",
+      fulfillmentLabel: "Recoger en cocina",
+    });
+
+    const link = await screen.findByRole("link", {
+      name: new RegExp(copy.whatsappLabel, "i"),
+    });
+    const text = new URL(link.getAttribute("href")!).searchParams.get("text");
+    expect(text).toContain("Tipo: Evento con barra de mariscos");
+    expect(text).toContain("Entrega: Recoger en cocina");
   });
 });

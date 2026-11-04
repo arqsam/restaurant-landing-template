@@ -9,6 +9,8 @@ interface HeroProps {
   titleEmphasis?: string;
   subtitle: string;
   image: HeroImage;
+  /** Ver `hero.tone` en la configuración. */
+  tone?: "light" | "dark";
   ctaLabel: string;
   ctaHref: string;
   secondaryLabel: string;
@@ -22,6 +24,7 @@ export function Hero({
   titleEmphasis,
   subtitle,
   image,
+  tone = "light",
   ctaLabel,
   ctaHref,
   secondaryLabel,
@@ -34,6 +37,7 @@ export function Hero({
     <section
       id={SECTION_IDS.hero}
       className={styles.hero}
+      data-tone={tone}
       aria-labelledby="hero-title"
     >
       {/* Fotografía a sangre bajo un velo claro. Es la imagen principal (LCP):
