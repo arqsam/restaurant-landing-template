@@ -17,6 +17,40 @@ export const FULFILLMENT_LABELS: Record<Fulfillment, string> = {
   recoger: "Recoger en tienda",
 };
 
+/** Etiquetas visibles de los tipos de solicitud y las formas de entrega. */
+export interface ContactLabels {
+  type: Record<ContactType, string>;
+  fulfillment: Record<Fulfillment, string>;
+}
+
+/** Textos que un negocio puede cambiar desde `site.contactForm`; lo que falte usa los de la plantilla. */
+export interface ContactLabelOverrides {
+  type?: Partial<Record<ContactType, string>>;
+  fulfillment?: Partial<Record<Fulfillment, string>>;
+}
+
+function mergeLabels<K extends string>(
+  defaults: Record<K, string>,
+  overrides: Partial<Record<K, string>> = {},
+): Record<K, string> {
+  const merged = { ...defaults };
+  for (const key of Object.keys(defaults) as K[]) {
+    const custom = overrides[key]?.trim();
+    if (custom) merged[key] = custom;
+  }
+  return merged;
+}
+
+/** Combina las etiquetas de la plantilla con las del negocio. */
+export function resolveContactLabels(
+  overrides: ContactLabelOverrides = {},
+): ContactLabels {
+  return {
+    type: mergeLabels(CONTACT_TYPE_LABELS, overrides.type),
+    fulfillment: mergeLabels(FULFILLMENT_LABELS, overrides.fulfillment),
+  };
+}
+
 /** Lo que el usuario escribe: todo es texto, como en los inputs. */
 export interface ContactValues {
   name: string;
@@ -93,6 +127,10 @@ export interface ContactPayload {
   /** Resumen del pastel del personalizador, si lo hay. */
   order?: string;
   message: string;
+  /** Etiqueta del tipo tal como la ve el negocio; si falta se usa la de la plantilla. */
+  typeLabel?: string;
+  /** Etiqueta de la forma de entrega; si falta se usa la de la plantilla. */
+  fulfillmentLabel?: string;
 }
 
 /** Resultado de un proveedor de formularios (lo implementa cada adaptador). */
@@ -228,19 +266,30 @@ export function validateContact(
 }
 
 /** Limpia y convierte valores ya validados. Llamar solo si `validateContact` fue válido. */
-export function toContactPayload(values: ContactValues): ContactPayload {
+export function toContactPayload(
+  values: ContactValues,
+  labels?: ContactLabels,
+): ContactPayload {
   const guests = values.guests.trim();
   const order = values.order.trim();
+  const type = values.type as ContactType;
+  const fulfillment = values.fulfillment as Fulfillment;
   return {
     name: values.name.trim(),
     phone: normalizePhone(values.phone),
     email: values.email.trim(),
-    type: values.type as ContactType,
+    type,
     date: values.date,
     ...(guests ? { guests: Number(guests) } : {}),
-    fulfillment: values.fulfillment as Fulfillment,
+    fulfillment,
     ...(order ? { order } : {}),
     message: values.message.trim(),
+    ...(labels
+      ? {
+          typeLabel: labels.type[type],
+          fulfillmentLabel: labels.fulfillment[fulfillment],
+        }
+      : {}),
   };
 }
 
@@ -254,12 +303,14 @@ export function buildContactSummary(
   const rows = [
     intro,
     "",
-    `Tipo: ${CONTACT_TYPE_LABELS[data.type]}`,
+    `Tipo: ${data.typeLabel ?? CONTACT_TYPE_LABELS[data.type]}`,
     `Nombre: ${data.name}`,
   ];
   if (data.date) rows.push(`Fecha: ${formatDateEs(data.date)}`);
   if (data.guests) rows.push(`Personas: ${data.guests}`);
-  rows.push(`Entrega: ${FULFILLMENT_LABELS[data.fulfillment]}`);
+  rows.push(
+    `Entrega: ${data.fulfillmentLabel ?? FULFILLMENT_LABELS[data.fulfillment]}`,
+  );
   if (data.message) rows.push(`Notas: ${data.message}`);
   if (data.order) rows.push("", data.order);
   return rows.join("\n");

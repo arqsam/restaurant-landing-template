@@ -1,8 +1,8 @@
-import type { SiteConfig } from "./types.ts";
+import type { CustomizableSiteConfig } from "./types.ts";
 
 // Configuración de ejemplo: "Mallow & Crumb", pastelería de marca FICTICIA.
 // Datos, dirección, teléfono y reseñas son de muestra.
-export const site: SiteConfig = {
+export const site: CustomizableSiteConfig = {
   brand: {
     name: "Mallow & Crumb",
     type: "bakery",

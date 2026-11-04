@@ -83,6 +83,21 @@ describe("construcción de la solicitud", () => {
     );
   });
 
+  it("el asunto y los campos del correo usan las etiquetas del negocio si vienen en los datos", () => {
+    const custom: ContactPayload = {
+      ...data,
+      typeLabel: "Evento con barra de mariscos",
+      fulfillmentLabel: "Entrega y montaje en mi evento",
+    };
+    expect(buildSubject(custom)).toBe(
+      "Nueva solicitud: Evento con barra de mariscos · Ana Pérez",
+    );
+    expect(buildFields(custom)).toMatchObject({
+      tipo: "Evento con barra de mariscos",
+      entrega: "Entrega y montaje en mi evento",
+    });
+  });
+
   it("el resumen del pastel viaja al correo en el campo 'pastel'", () => {
     const withOrder = {
       ...data,

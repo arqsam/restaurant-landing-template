@@ -38,11 +38,7 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(
-      to bottom,
-      transparent 62%,
-      var(--color-bg) 100%
-    ),
+    linear-gradient(to bottom, transparent 62%, var(--color-bg) 100%),
     radial-gradient(
       ellipse at 50% 48%,
       color-mix(in srgb, var(--color-bg) 80%, transparent) 0%,
@@ -65,7 +61,11 @@
   }
 
   .title em {
-    color: color-mix(in srgb, var(--color-accent-text) 40%, var(--color-primary));
+    color: color-mix(
+      in srgb,
+      var(--color-accent-text) 40%,
+      var(--color-primary)
+    );
   }
 }
 
@@ -172,10 +172,142 @@
   gap: var(--space-2) var(--space-6);
   margin: var(--space-7) 0 0;
   padding: var(--space-4) 0 0;
-  border-top: 1px solid color-mix(in srgb, var(--color-primary) 22%, transparent);
+  border-top: 1px solid
+    color-mix(in srgb, var(--color-primary) 22%, transparent);
   list-style: none;
   color: var(--color-text);
   font-size: var(--text-sm);
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+/*
+  Tono oscuro (hero.tone: "dark"), para marcas sobrias o gourmet.
+  La foto se ve nítida y sin velo; conviene una foto de fondo oscuro con el
+  motivo a la derecha. En pantallas angostas va arriba y el texto debajo, sobre
+  el color primario; en escritorio el texto va a la izquierda, sobre la zona
+  oscura de la foto con un sombreado muy suave. El texto va en claro y alineado
+  a la izquierda. Los colores salen de la marca.
+*/
+.hero[data-tone="dark"] {
+  display: block;
+  min-height: 0;
+  background: var(--color-primary);
+  text-align: left;
+}
+
+.hero[data-tone="dark"] .figure {
+  position: relative;
+  inset: auto;
+  height: clamp(18rem, 52svh, 34rem);
+}
+
+.hero[data-tone="dark"] .image {
+  filter: saturate(1.05);
+  transform: none;
+  object-position: 88% 50%;
+}
+
+/* Solo se funde con el fondo oscuro del texto; el resto de la foto no tiene velo */
+.hero[data-tone="dark"] .figure::after {
+  background: linear-gradient(
+    to bottom,
+    transparent 62%,
+    var(--color-primary) 100%
+  );
+}
+
+.hero[data-tone="dark"] .copy {
+  align-items: flex-start;
+  width: min(100% - 2 * var(--gutter), var(--container));
+  margin-inline: auto;
+  padding-block: var(--space-5) var(--space-8);
+}
+
+.hero[data-tone="dark"] .tagline {
+  justify-content: flex-start;
+  color: color-mix(in srgb, var(--color-accent) 45%, var(--color-bg));
+}
+
+.hero[data-tone="dark"] .tagline::before,
+.hero[data-tone="dark"] .tagline::after {
+  background: var(--color-accent);
+}
+
+.hero[data-tone="dark"] .tagline::after {
+  display: none;
+}
+
+.hero[data-tone="dark"] .title {
+  max-width: 40rem;
+  color: var(--color-bg);
+  font-size: clamp(2.75rem, 1.5rem + 6vw, 6rem);
+}
+
+.hero[data-tone="dark"] .title em {
+  color: color-mix(in srgb, var(--color-accent) 50%, var(--color-bg));
+}
+
+.hero[data-tone="dark"] .subtitle {
+  color: color-mix(in srgb, var(--color-bg) 92%, transparent);
+  text-wrap: pretty;
+}
+
+.hero[data-tone="dark"] .actions {
+  justify-content: flex-start;
+}
+
+.hero[data-tone="dark"] .cta {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.hero[data-tone="dark"] .textLink {
+  color: var(--color-bg);
+}
+
+.hero[data-tone="dark"] .textLink:hover {
+  color: color-mix(in srgb, var(--color-accent) 50%, var(--color-bg));
+}
+
+.hero[data-tone="dark"] .facts {
+  justify-content: flex-start;
+  max-width: 40rem;
+  border-top-color: color-mix(in srgb, var(--color-bg) 30%, transparent);
+  color: color-mix(in srgb, var(--color-bg) 92%, transparent);
+}
+
+/* Escritorio: foto a sangre con el texto a la izquierda sobre un degradado */
+@media (min-width: 75em) {
+  .hero[data-tone="dark"] {
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    min-height: 100svh;
+    background: none;
+  }
+
+  .hero[data-tone="dark"] .figure {
+    position: absolute;
+    inset: 0;
+    height: auto;
+  }
+
+  .hero[data-tone="dark"] .image {
+    object-position: 100% 50%;
+  }
+
+  /* Solo un sombreado muy suave detrás del texto, sin borde ni franja de color */
+  .hero[data-tone="dark"] .figure::after {
+    background: radial-gradient(
+      ellipse 70% 80% at 18% 55%,
+      color-mix(in srgb, var(--color-primary) 55%, transparent) 0%,
+      color-mix(in srgb, var(--color-primary) 25%, transparent) 55%,
+      transparent 100%
+    );
+  }
+
+  .hero[data-tone="dark"] .copy {
+    padding-block: calc(var(--header-height) + var(--space-8)) var(--space-8);
+  }
 }

@@ -14,7 +14,7 @@ import { Menu } from "./components/Menu/Menu";
 import { SectionHeading } from "./components/SectionHeading/SectionHeading";
 import { Testimonials } from "./components/Testimonials/Testimonials";
 import { WhatsAppButton } from "./components/WhatsAppButton/WhatsAppButton";
-import { site } from "./content/site";
+import { site } from "./content/active";
 import { useBrandTheme } from "./hooks/useBrandTheme";
 import { useContactForm } from "./hooks/useContactForm";
 import { buildPackageMessage } from "./lib/catering";
@@ -22,6 +22,7 @@ import { resolveFeatured } from "./lib/featured";
 import { buildHeroFacts } from "./lib/hero";
 import { buildItemOrderHref } from "./lib/itemOrder";
 import { SECTION_IDS, buildNavLinks } from "./lib/nav";
+import { resolveContactLabels } from "./lib/contactForm";
 import { createSubmitContact } from "./lib/formProvider";
 import { buildWhatsAppUrl } from "./lib/whatsapp";
 
@@ -37,6 +38,12 @@ const submitContact = createSubmitContact(
   { debug: import.meta.env.DEV },
 );
 
+/** Textos de "¿Qué necesitas?" y "¿Cómo lo recibes?" (los del negocio o los de la plantilla). */
+const contactLabels = resolveContactLabels({
+  type: site.contactForm.typeLabels,
+  fulfillment: site.contactForm.fulfillmentLabels,
+});
+
 function App() {
   useBrandTheme(site.brand.colors);
   // El formulario vive aquí para que "Solicitar este pastel" pueda precargarlo.
@@ -45,6 +52,7 @@ function App() {
     timeZone: site.hours.timeZone,
     submit: submitContact,
     whatsappPhone: site.orders.whatsapp,
+    labels: contactLabels,
   });
   const [quoteFocus, setQuoteFocus] = useState(0);
   const requestQuote = (summary: string) => {
@@ -57,6 +65,8 @@ function App() {
     site.orders.whatsapp,
     site.orders.defaultMessage,
   );
+  // El personalizador solo se muestra si está activo y tiene sus datos.
+  const customizer = site.sections.customizer ? site.customizer : undefined;
 
   return (
     <>
@@ -72,6 +82,7 @@ function App() {
           subtitle={site.hero.subtitle}
           titleEmphasis={site.hero.titleEmphasis}
           image={site.hero.image}
+          tone={site.hero.tone}
           facts={buildHeroFacts(site.orders)}
           ctaLabel={site.hero.ctaLabel}
           ctaHref={whatsappUrl}
@@ -108,10 +119,10 @@ function App() {
           />
         </section>
 
-        {site.sections.customizer ? (
+        {customizer ? (
           <CustomizerSection
             id={SECTION_IDS.customizer}
-            customizer={site.customizer}
+            customizer={customizer}
             depositPercent={site.orders.depositPercent}
             notes={[site.orders.paymentNote]}
             ctaLabel="Pedir por WhatsApp"
@@ -119,7 +130,7 @@ function App() {
             buildHref={(summary) =>
               buildWhatsAppUrl(
                 site.orders.whatsapp,
-                `${site.customizer.orderIntro}\n\n${summary}`,
+                `${customizer.orderIntro}\n\n${summary}`,
               )
             }
           />

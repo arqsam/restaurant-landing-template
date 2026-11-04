@@ -1,0 +1,317 @@
+import { describe, expect, it } from "vitest";
+import type { SiteConfig } from "./types.ts";
+
+const HEX = /^#[0-9a-f]{6}$/i;
+const TIME = /^([01]\d|2[0-3]):[0-5]\d$/;
+
+function unique(values: string[]) {
+  return new Set(values).size === values.length;
+}
+
+/**
+ * Contrato que debe cumplir cualquier configuración de la plantilla (AC-04):
+ * la de la pastelería de ejemplo y la de catering lo ejecutan por igual. Lo que
+ * solo aplica a una de ellas (p. ej. el personalizador de pasteles) vive en su
+ * propio archivo de pruebas.
+ */
+export function describeSiteContract(name: string, config: SiteConfig) {
+  describe(`contrato de configuración: ${name}`, () => {
+    const items = config.menu.flatMap((category) => category.items);
+
+    it("define la etiqueta del enlace al menú para la navegación", () => {
+      expect(config.nav.menuLabel.trim().length).toBeGreaterThan(0);
+    });
+
+    it("el encabezado del menú tiene texto y su énfasis está dentro del título", () => {
+      const { eyebrow, title, titleEmphasis } = config.menuIntro;
+      expect(eyebrow.trim().length).toBeGreaterThan(0);
+      expect(title.trim().length).toBeGreaterThan(0);
+      if (titleEmphasis) expect(title).toContain(titleEmphasis);
+    });
+
+    it("la imagen del hero tiene texto alternativo y dimensiones", () => {
+      const { image } = config.hero;
+      expect(image.alt.trim().length).toBeGreaterThan(0);
+      expect(image.width).toBeGreaterThan(0);
+      expect(image.height).toBeGreaterThan(0);
+    });
+
+    it("el tono del hero es claro u oscuro", () => {
+      expect([undefined, "light", "dark"]).toContain(config.hero.tone);
+    });
+
+    it("el énfasis del título del hero es un fragmento del propio título", () => {
+      const { title, titleEmphasis } = config.hero;
+      if (titleEmphasis) expect(title).toContain(titleEmphasis);
+    });
+
+    it("usa colores de marca en formato #RRGGBB", () => {
+      expect(config.brand.colors.primary).toMatch(HEX);
+      expect(config.brand.colors.accent).toMatch(HEX);
+    });
+
+    it("los ids del menú son únicos", () => {
+      expect(unique(config.menu.map((category) => category.id))).toBe(true);
+      expect(unique(items.map((item) => item.id))).toBe(true);
+    });
+
+    it("todos los precios del menú son enteros positivos", () => {
+      for (const item of items) {
+        expect(Number.isInteger(item.price)).toBe(true);
+        expect(item.price).toBeGreaterThan(0);
+      }
+    });
+
+    it("las fotos del menú tienen texto alternativo y dimensiones", () => {
+      for (const item of items) {
+        if (!item.image) continue;
+        expect(item.image.alt.trim().length).toBeGreaterThan(0);
+        expect(item.image.width).toBeGreaterThan(0);
+        expect(item.image.height).toBeGreaterThan(0);
+      }
+    });
+
+    it("los encabezados de destacados y catering tienen texto y énfasis válido", () => {
+      for (const intro of [config.featured, config.cateringIntro]) {
+        expect(intro.eyebrow.trim().length).toBeGreaterThan(0);
+        expect(intro.title.trim().length).toBeGreaterThan(0);
+        if (intro.titleEmphasis)
+          expect(intro.title).toContain(intro.titleEmphasis);
+      }
+    });
+
+    it("los paquetes tienen ids únicos, descripción y al menos un elemento incluido", () => {
+      expect(unique(config.packages.map((p) => p.id))).toBe(true);
+      for (const pkg of config.packages) {
+        expect(pkg.description.trim().length).toBeGreaterThan(0);
+        expect(pkg.includes.length).toBeGreaterThan(0);
+        if (pkg.pricePerPerson !== undefined) {
+          expect(Number.isInteger(pkg.pricePerPerson)).toBe(true);
+          expect(pkg.pricePerPerson).toBeGreaterThan(0);
+        }
+      }
+    });
+
+    it("las bebidas de catering no repiten ids del menú y tienen precios enteros", () => {
+      const menuIds = new Set(items.map((item) => item.id));
+      for (const drink of config.beverages?.items ?? []) {
+        expect(menuIds.has(drink.id)).toBe(false);
+        expect(Number.isInteger(drink.price)).toBe(true);
+      }
+    });
+
+    it("los encabezados de cómo pedir, galería y reseñas tienen texto y énfasis válido", () => {
+      for (const intro of [
+        config.howToOrder,
+        config.gallery,
+        config.testimonials,
+      ]) {
+        expect(intro.eyebrow.trim().length).toBeGreaterThan(0);
+        expect(intro.title.trim().length).toBeGreaterThan(0);
+        if (intro.titleEmphasis)
+          expect(intro.title).toContain(intro.titleEmphasis);
+      }
+    });
+
+    it("las fotos de la galería tienen dimensiones y los pasos de pedido tienen texto", () => {
+      for (const image of config.gallery.images) {
+        expect(image.width).toBeGreaterThan(0);
+        expect(image.height).toBeGreaterThan(0);
+      }
+      expect(config.howToOrder.steps.length).toBeGreaterThanOrEqual(3);
+      for (const step of config.howToOrder.steps) {
+        expect(step.title.trim().length).toBeGreaterThan(0);
+        expect(step.description.trim().length).toBeGreaterThan(0);
+      }
+    });
+
+    it("cada categoría indica si es de vitrina o por encargo y hay textos para ambos", () => {
+      for (const category of [
+        ...config.menu,
+        ...(config.beverages ? [config.beverages] : []),
+      ]) {
+        expect(["vitrina", "encargo"]).toContain(category.availability);
+      }
+      for (const copy of Object.values(config.orders.itemOrder)) {
+        expect(copy.label.trim().length).toBeGreaterThan(0);
+        expect(copy.badge.trim().length).toBeGreaterThan(0);
+        expect(copy.message).toContain("{item}");
+      }
+    });
+
+    it("el encabezado de contacto tiene texto y énfasis válido", () => {
+      const { eyebrow, title, titleEmphasis } = config.contactIntro;
+      expect(eyebrow.trim().length).toBeGreaterThan(0);
+      expect(title.trim().length).toBeGreaterThan(0);
+      if (titleEmphasis) expect(title).toContain(titleEmphasis);
+    });
+
+    it("cada día abierto cierra después de abrir y la zona horaria es válida", () => {
+      expect(
+        () =>
+          new Intl.DateTimeFormat("es-MX", { timeZone: config.hours.timeZone }),
+      ).not.toThrow();
+      for (const day of Object.values(config.hours.schedule)) {
+        if (day) expect(day.close > day.open).toBe(true);
+      }
+    });
+
+    it("los destacados apuntan a platillos que existen", () => {
+      const ids = new Set(items.map((item) => item.id));
+      for (const id of config.featured.itemIds) {
+        expect(ids.has(id)).toBe(true);
+      }
+    });
+
+    it("los paquetes de catering tienen ids únicos y precio por persona positivo", () => {
+      expect(unique(config.packages.map((p) => p.id))).toBe(true);
+      for (const pack of config.packages) {
+        expect(pack.pricePerPerson ?? 1).toBeGreaterThan(0);
+      }
+    });
+
+    it("los horarios cubren los 7 días con formato HH:mm", () => {
+      const days = Object.keys(config.hours.schedule);
+      expect(days.sort()).toEqual([
+        "fri",
+        "mon",
+        "sat",
+        "sun",
+        "thu",
+        "tue",
+        "wed",
+      ]);
+      for (const day of Object.values(config.hours.schedule)) {
+        if (day) {
+          expect(day.open).toMatch(TIME);
+          expect(day.close).toMatch(TIME);
+        }
+      }
+    });
+
+    it("los pedidos tienen WhatsApp válido, anticipo entre 1 y 100 y anticipación no negativa", () => {
+      expect(config.orders.whatsapp).toMatch(/^52\d{10}$/);
+      expect(config.orders.depositPercent).toBeGreaterThanOrEqual(1);
+      expect(config.orders.depositPercent).toBeLessThanOrEqual(100);
+      expect(config.orders.minLeadDays).toBeGreaterThanOrEqual(0);
+    });
+
+    it("el SEO respeta longitudes razonables", () => {
+      expect(config.seo.title.length).toBeLessThanOrEqual(60);
+      expect(config.seo.description.length).toBeLessThanOrEqual(160);
+    });
+
+    it("las reseñas de la configuración de ejemplo están marcadas como de muestra", () => {
+      for (const review of config.testimonials.items) {
+        expect(review.isSample).toBe(true);
+      }
+    });
+
+    it("las imágenes de la galería tienen texto alternativo", () => {
+      for (const image of config.gallery.images) {
+        expect(image.alt.trim().length).toBeGreaterThan(0);
+      }
+    });
+
+    it("el formulario de cotización tiene todos sus textos y un proveedor admitido", () => {
+      const { typeLabels, fulfillmentLabels, ...texts } = config.contactForm;
+      expect(typeLabels === undefined || typeof typeLabels === "object").toBe(
+        true,
+      );
+      expect(
+        fulfillmentLabels === undefined ||
+          typeof fulfillmentLabels === "object",
+      ).toBe(true);
+      for (const [key, value] of Object.entries(texts)) {
+        expect(value.trim().length, key).toBeGreaterThan(0);
+      }
+      expect(["web3forms", "formspree"]).toContain(config.contact.formProvider);
+    });
+
+    it("las etiquetas propias del formulario, si las hay, tienen texto y solo usan claves conocidas", () => {
+      const { typeLabels = {}, fulfillmentLabels = {} } = config.contactForm;
+      expect(
+        Object.keys(typeLabels).every((key) =>
+          ["pastel", "catering", "otro"].includes(key),
+        ),
+      ).toBe(true);
+      expect(
+        Object.keys(fulfillmentLabels).every((key) =>
+          ["entrega", "recoger"].includes(key),
+        ),
+      ).toBe(true);
+      for (const value of [
+        ...Object.values(typeLabels),
+        ...Object.values(fulfillmentLabels),
+      ]) {
+        expect(value.trim().length).toBeGreaterThan(0);
+      }
+    });
+
+    describe("SEO", () => {
+      const { seo } = config;
+
+      it("la URL del sitio es https y no termina en barra", () => {
+        expect(seo.siteUrl).toMatch(/^https:\/\/[^/\s]+$/);
+      });
+
+      it("el idioma tiene formato idioma_PAÍS", () => {
+        expect(seo.locale).toMatch(/^[a-z]{2}_[A-Z]{2}$/);
+      });
+
+      it("la dirección estructurada está completa y el país es un código de 2 letras", () => {
+        for (const [key, value] of Object.entries(seo.address)) {
+          expect(value.trim().length, key).toBeGreaterThan(0);
+        }
+        expect(seo.address.country).toMatch(/^[A-Z]{2}$/);
+      });
+
+      it("la dirección estructurada coincide con la que se muestra en el sitio", () => {
+        expect(config.contact.address).toContain(seo.address.street);
+      });
+
+      it("la imagen para compartir es una ruta del sitio", () => {
+        expect(seo.ogImage).toMatch(/^\//);
+      });
+
+      it("las coordenadas, si existen, son válidas", () => {
+        if (!seo.geo) return;
+        expect(Math.abs(seo.geo.latitude)).toBeLessThanOrEqual(90);
+        expect(Math.abs(seo.geo.longitude)).toBeLessThanOrEqual(180);
+      });
+
+      it("los perfiles, si existen, son enlaces https", () => {
+        for (const url of seo.sameAs ?? []) {
+          expect(url).toMatch(/^https:\/\//);
+        }
+      });
+    });
+
+    it("si el personalizador está activo tiene sus datos y su etiqueta; si no, no hace falta", () => {
+      if (!config.sections.customizer) return;
+      expect(config.customizer).toBeDefined();
+      expect(config.nav.customizerLabel?.trim().length).toBeGreaterThan(0);
+    });
+
+    it("las secciones activas tienen contenido", () => {
+      const { sections } = config;
+      if (sections.featured)
+        expect(config.featured.itemIds.length).toBeGreaterThan(0);
+      if (sections.catering) expect(config.packages.length).toBeGreaterThan(0);
+      if (sections.gallery)
+        expect(config.gallery.images.length).toBeGreaterThan(0);
+      if (sections.testimonials)
+        expect(config.testimonials.items.length).toBeGreaterThan(0);
+      if (sections.faq) expect(config.faq.items.length).toBeGreaterThan(0);
+    });
+
+    it("las etiquetas propias del formulario (tipo y entrega) no están vacías", () => {
+      const { typeLabels, fulfillmentLabels } = config.contactForm;
+      for (const labels of [typeLabels, fulfillmentLabels]) {
+        for (const [key, value] of Object.entries(labels ?? {})) {
+          expect(value?.trim().length, key).toBeGreaterThan(0);
+        }
+      }
+    });
+  });
+}

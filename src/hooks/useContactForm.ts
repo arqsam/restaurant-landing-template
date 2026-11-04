@@ -9,6 +9,7 @@ import {
   validateContact,
   type ContactErrors,
   type ContactField,
+  type ContactLabels,
   type ContactPayload,
   type ContactValues,
   type SubmitResult,
@@ -31,6 +32,8 @@ export interface UseContactFormOptions {
   whatsappPhone: string;
   /** Primera línea del mensaje de WhatsApp. */
   intro?: string;
+  /** Etiquetas del negocio para el tipo de solicitud y la entrega (ver `resolveContactLabels`). */
+  labels?: ContactLabels;
   /** Reloj inyectable (pruebas). */
   now?: () => Date;
 }
@@ -45,6 +48,7 @@ export function useContactForm({
   submit,
   whatsappPhone,
   intro,
+  labels,
   now = () => new Date(),
 }: UseContactFormOptions) {
   const [values, setValues] = useState<ContactValues>(EMPTY_CONTACT);
@@ -85,7 +89,7 @@ export function useContactForm({
       return CONTACT_FIELDS.find((field) => check.errors[field]) ?? null;
     }
 
-    const data = toContactPayload(values);
+    const data = toContactPayload(values, labels);
     setPayload(data);
     setErrorMessage(null);
 
@@ -112,7 +116,7 @@ export function useContactForm({
       sending.current = false;
     }
     return null;
-  }, [values, rules, submit]);
+  }, [values, rules, submit, labels]);
 
   /**
    * Carga valores desde fuera (p. ej. el pastel del personalizador). Conserva lo

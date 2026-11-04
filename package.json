@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:catering": "vite --mode catering",
     "build": "tsc -b && vite build",
+    "build:catering": "tsc -b && vite build --mode catering",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",

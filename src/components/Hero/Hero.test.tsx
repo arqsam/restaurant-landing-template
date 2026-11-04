@@ -78,6 +78,19 @@ describe("Hero", () => {
     expect(items[0]).toHaveTextContent("2 días de anticipación");
   });
 
+  it("por defecto usa el tono claro y acepta el tono oscuro", () => {
+    const { container, rerender } = render(<Hero {...props} />);
+    expect(container.querySelector("section#inicio")).toHaveAttribute(
+      "data-tone",
+      "light",
+    );
+    rerender(<Hero {...props} tone="dark" />);
+    expect(container.querySelector("section#inicio")).toHaveAttribute(
+      "data-tone",
+      "dark",
+    );
+  });
+
   it("es la sección de inicio (ancla #inicio)", () => {
     const { container } = render(<Hero {...props} />);
     expect(container.querySelector("section#inicio")).toBeTruthy();

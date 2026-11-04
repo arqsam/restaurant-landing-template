@@ -2,6 +2,7 @@
  * Estima el peso de la primera carga del sitio compilado (RNF-03: ≤ 1.5 MB).
  *
  * Uso: npm run build && npm run weight   (o: node scripts/dist-weight.ts [carpeta])
+ * Con la configuración de catering: npm run build:catering && npm run weight
  *
  * Suma el HTML, el CSS y el JS (comprimidos con gzip, como los sirve Vercel) más
  * la foto del hero que descargaría cada tipo de pantalla. No cuenta las imágenes
@@ -9,7 +10,6 @@
  */
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { gzipSync } from "node:zlib";
-import { site } from "../src/content/site.ts";
 import { parseSrcSet, pickCandidate } from "./images.ts";
 
 const BUDGET_KB = 1.5 * 1024;
@@ -44,7 +44,26 @@ console.log(
   `HTML: ${htmlKb.toFixed(1)} KB · CSS y JS (${assets.length} archivos): ${codeKb.toFixed(1)} KB (gzip)\n`,
 );
 
-const candidates = parseSrcSet(site.hero.image.srcSet ?? site.hero.image.src);
+/** Variantes del hero según el `<link rel="preload" as="image">` del HTML compilado. */
+function heroCandidates(page: string) {
+  const preload = [...page.matchAll(/<link\b[^>]*>/g)]
+    .map((match) => match[0])
+    .find((tag) => /rel="preload"/.test(tag) && /as="image"/.test(tag));
+  const srcSet = preload?.match(/imagesrcset="([^"]*)"/)?.[1];
+  const href = preload?.match(/href="([^"]*)"/)?.[1];
+  const value = srcSet ?? href;
+  if (!value) {
+    console.error(
+      'dist/index.html no tiene <link rel="preload" as="image"> del hero.',
+    );
+    return process.exit(1);
+  }
+  return parseSrcSet(value.replaceAll("&amp;", "&"));
+}
+
+// Se lee del HTML compilado para medir la configuración que se construyó
+// (pastelería o catering), no una fija.
+const candidates = heroCandidates(html);
 let worst = 0;
 for (const scenario of SCENARIOS) {
   const needed = Math.ceil(scenario.width * scenario.density);
