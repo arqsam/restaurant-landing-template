@@ -22,7 +22,7 @@ export const cateringSite: SiteConfig = {
     description:
       "Barras de mariscos y pescados gourmet para eventos familiares y corporativos en la Ciudad de México. Cotiza por WhatsApp o en línea.",
     ogImage: "/images/nerita/og-image.jpg",
-    siteUrl: "https://neritacatering.example",
+    siteUrl: "https://nerita-catering.vercel.app",
     locale: "es_MX",
     address: {
       street: "Av. Ejemplo 456, Col. Roma Norte",

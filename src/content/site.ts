@@ -14,7 +14,7 @@ export const site: CustomizableSiteConfig = {
     description:
       "Pasteles personalizados, postres de vitrina y mesas de postres para tus eventos. Pide por WhatsApp o cotiza en línea.",
     ogImage: "/images/og-image.jpg",
-    siteUrl: "https://mallowandcrumb.example",
+    siteUrl: "https://mallow-and-crumb.vercel.app",
     locale: "es_MX",
     address: {
       street: "Calle Ejemplo 123, Col. Centro",

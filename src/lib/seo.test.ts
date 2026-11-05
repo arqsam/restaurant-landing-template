@@ -82,14 +82,14 @@ describe("buildJsonLd", () => {
     expect(data["@context"]).toBe("https://schema.org");
     expect(data["@type"]).toBe("Bakery");
     expect(data.name).toBe(site.brand.name);
-    expect(data.url).toBe("https://mallowandcrumb.example/");
+    expect(data.url).toBe("https://mallow-and-crumb.vercel.app/");
   });
 
   it("usa URL absolutas para la imagen y el menú", () => {
     expect(data.image).toBe(
-      "https://mallowandcrumb.example/images/og-image.jpg",
+      "https://mallow-and-crumb.vercel.app/images/og-image.jpg",
     );
-    expect(data.hasMenu).toBe("https://mallowandcrumb.example/#menu");
+    expect(data.hasMenu).toBe("https://mallow-and-crumb.vercel.app/#menu");
   });
 
   it("incluye teléfono internacional, correo y dirección postal", () => {
@@ -132,7 +132,7 @@ describe("buildJsonLd", () => {
   it("sin la imagen de SEO usa la del hero", () => {
     const fallback = buildJsonLd(withSeo({ ogImage: undefined }));
     expect(fallback.image).toBe(
-      `https://mallowandcrumb.example${site.hero.image.src}`,
+      `https://mallow-and-crumb.vercel.app${site.hero.image.src}`,
     );
   });
 
@@ -159,13 +159,13 @@ describe("buildHeadTags", () => {
 
   it("incluye URL canónica, color del navegador y Open Graph", () => {
     expect(html).toContain(
-      '<link rel="canonical" href="https://mallowandcrumb.example/" />',
+      '<link rel="canonical" href="https://mallow-and-crumb.vercel.app/" />',
     );
     expect(html).toContain('<meta name="theme-color" content="#3b2a24" />');
     expect(html).toContain('<meta property="og:type" content="website" />');
     expect(html).toContain('<meta property="og:locale" content="es_MX" />');
     expect(html).toContain(
-      '<meta property="og:image" content="https://mallowandcrumb.example/images/og-image.jpg" />',
+      '<meta property="og:image" content="https://mallow-and-crumb.vercel.app/images/og-image.jpg" />',
     );
   });
 
@@ -174,7 +174,7 @@ describe("buildHeadTags", () => {
       '<meta name="twitter:card" content="summary_large_image" />',
     );
     expect(html).toContain(
-      '<meta name="twitter:image" content="https://mallowandcrumb.example/images/og-image.jpg" />',
+      '<meta name="twitter:image" content="https://mallow-and-crumb.vercel.app/images/og-image.jpg" />',
     );
   });
 

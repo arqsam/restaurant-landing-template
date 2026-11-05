@@ -9,6 +9,10 @@ export default mergeConfig(
       environment: "jsdom",
       setupFiles: ["./src/test/setup.ts"],
       css: false,
+      // Las pruebas de interfaz con userEvent tardan más cuando varios archivos
+      // corren en paralelo (jsdom se crea una vez por archivo). 5 s es el valor
+      // por defecto y se quedaba corto en equipos con carga.
+      testTimeout: 15_000,
     },
   }),
 );

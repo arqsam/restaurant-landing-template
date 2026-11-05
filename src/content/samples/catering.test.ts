@@ -113,7 +113,7 @@ describe("Nerita Catering: una marca distinta con la misma plantilla (AC-04)", (
       "<title>Nerita Catering | Barras de mariscos para eventos en CDMX</title>",
     );
     expect(head).toContain(
-      "https://neritacatering.example/images/nerita/og-image.jpg",
+      "https://nerita-catering.vercel.app/images/nerita/og-image.jpg",
     );
     expect(head).toContain('rel="preload" as="image"');
     expect(head).toContain("/images/nerita/hero-1080.webp");
