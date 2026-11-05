@@ -237,7 +237,7 @@ export interface SiteConfig {
     description: string;
     /** Imagen para compartir (idealmente 1200×630, JPG). Si falta se usa la del hero. */
     ogImage?: string;
-    /** URL pública del sitio, sin barra final: "https://mallowandcrumb.example". */
+    /** URL pública del sitio, sin barra final: "https://mallow-and-crumb.vercel.app". */
     siteUrl: string;
     /** Idioma y país para Open Graph: "es_MX". */
     locale: string;
