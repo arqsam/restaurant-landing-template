@@ -3,7 +3,7 @@ import { contrastRatio } from "../../lib/color";
 import { resolveContactLabels } from "../../lib/contactForm";
 import { buildHeroFacts } from "../../lib/hero";
 import { SECTION_IDS, buildNavLinks } from "../../lib/nav";
-import { buildHeadTags, buildJsonLd } from "../../lib/seo";
+import { buildFaviconLink, buildHeadTags, buildJsonLd } from "../../lib/seo";
 import { LIGHT_BG, buildThemeVars } from "../../lib/theme";
 import { describeSiteContract } from "../contract";
 import { site as bakery } from "../site";
@@ -119,6 +119,12 @@ describe("Nerita Catering: una marca distinta con la misma plantilla (AC-04)", (
     expect(head).toContain("/images/nerita/hero-1080.webp");
     expect(head).not.toMatch(/mallow/i);
     expect(buildJsonLd(cateringSite)["@type"]).toBe("FoodEstablishment");
+  });
+
+  it("tiene su propio favicon, distinto al de la panadería", () => {
+    expect(cateringSite.seo.favicon).toBe("/favicon-nerita.svg");
+    expect(bakery.seo.favicon).toBeUndefined();
+    expect(buildFaviconLink(cateringSite)).toContain("/favicon-nerita.svg");
   });
 
   it("los destacados son platillos de la carta", () => {

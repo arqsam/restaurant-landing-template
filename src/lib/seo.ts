@@ -190,6 +190,22 @@ export function buildHeadTags(site: SiteConfig): string {
   ].join("\n    ");
 }
 
+const FAVICON_TYPES: Record<string, string> = {
+  svg: "image/svg+xml",
+  png: "image/png",
+  ico: "image/x-icon",
+};
+
+/** Etiqueta `<link rel="icon">` de la config, o "" si no define `seo.favicon`. */
+export function buildFaviconLink(site: SiteConfig): string {
+  const { favicon } = site.seo;
+  if (!favicon) return "";
+  const ext = favicon.split(".").pop()?.toLowerCase() ?? "";
+  const type = FAVICON_TYPES[ext];
+  const typeAttr = type ? ` type="${type}"` : "";
+  return `<link rel="icon"${typeAttr} href="${escapeHtml(favicon)}" />`;
+}
+
 /**
  * Aplica el SEO a un `index.html`: idioma, título único y etiquetas al final del
  * `<head>`. Lo usa el plugin de Vite y se puede probar sin navegador.
@@ -206,6 +222,10 @@ export function injectSeo(html: string, site: SiteConfig): string {
     : html.replace(/<html/i, `<html lang="${lang}"`);
   const withoutTitle = withLang.replace(/<title>[\s\S]*?<\/title>\s*/i, "");
   // Con una función, `$$` y `$&` del contenido (p. ej. "$$" en priceRange) no se interpretan.
-  const tags = buildHeadTags(site);
-  return withoutTitle.replace(/<\/head>/i, () => `${tags}\n  </head>`);
+  const favicon = buildFaviconLink(site);
+  const tags = [buildHeadTags(site), favicon].filter(Boolean).join("\n    ");
+  const withoutIcon = favicon
+    ? withoutTitle.replace(/[ \t]*<link[^>]*\srel="icon"[^>]*>\s*/i, "")
+    : withoutTitle;
+  return withoutIcon.replace(/<\/head>/i, () => `${tags}\n  </head>`);
 }

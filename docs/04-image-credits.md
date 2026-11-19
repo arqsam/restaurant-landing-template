@@ -37,7 +37,7 @@ Recortadas a 4:5 y exportadas en WebP a 480 px y 960 px de ancho. Minimalista y 
 | -------------- | ------------------------------------ | -------------------------------------------------------------------------------------------------------- |
 | `og-image.jpg` | Vista previa al compartir (1200×630) | Recorte de la foto del hero (autoría: **[Edgar Arroyo]**, Pexels, ver tabla de arriba), exportado a JPG. |
 
-El favicon (`public/favicon.svg`) es un dibujo propio de la plantilla.
+El favicon (`public/favicon.svg`) es un dibujo propio de la plantilla. El de Nerita Catering (`public/favicon-nerita.svg`) también es propio y se activa con `seo.favicon`.
 
 ## Segunda configuración: Nerita Catering (`public/images/nerita/`)
 
