@@ -3,6 +3,7 @@ import { site } from "../content/site";
 import type { SiteConfig } from "../content/types";
 import {
   absoluteUrl,
+  buildFaviconLink,
   buildHeadTags,
   buildHeroPreload,
   buildJsonLd,
@@ -271,6 +272,31 @@ describe("injectSeo", () => {
     expect(injectSeo(base.replace(' lang="en"', ""), site)).toContain(
       '<html lang="es-MX">',
     );
+  });
+
+  it("sin seo.favicon deja el ícono del index.html", () => {
+    const withIcon = base.replace(
+      "<title>",
+      '<link rel="icon" type="image/svg+xml" href="/favicon.svg" />\n    <title>',
+    );
+    expect(injectSeo(withIcon, site)).toContain('href="/favicon.svg"');
+  });
+
+  it("con seo.favicon reemplaza el ícono del index.html por el de la marca", () => {
+    const withIcon = base.replace(
+      "<title>",
+      '<link rel="icon" type="image/svg+xml" href="/favicon.svg" />\n    <title>',
+    );
+    const branded = injectSeo(withIcon, withSeo({ favicon: "/marca.png" }));
+    expect(branded.match(/rel="icon"/g)).toHaveLength(1);
+    expect(branded).toContain(
+      '<link rel="icon" type="image/png" href="/marca.png" />',
+    );
+    expect(branded).not.toContain("/favicon.svg");
+    expect(buildFaviconLink(withSeo({ favicon: "/x.ico" }))).toContain(
+      'type="image/x-icon"',
+    );
+    expect(buildFaviconLink(site)).toBe("");
   });
 
   it("falla con claridad si no hay head", () => {

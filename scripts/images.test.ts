@@ -180,3 +180,29 @@ for (const { name, config } of SITES) {
     });
   });
 }
+
+describe("favicon de cada marca", () => {
+  const faviconOf = (config: SiteConfig) =>
+    config.seo.favicon ?? "/favicon.svg";
+
+  it("cada sitio apunta a un archivo que existe en public", () => {
+    for (const { config } of SITES) {
+      expect(() => statSync(fileOf(faviconOf(config)))).not.toThrow();
+    }
+  });
+
+  it("las dos marcas no comparten favicon", () => {
+    const [first, second] = SITES.map(({ config }) => faviconOf(config));
+    expect(first).not.toBe(second);
+  });
+
+  it("el favicon de cada marca usa su color primario y no nombra a la otra", () => {
+    for (const { config } of SITES) {
+      const svg = readFileSync(fileOf(faviconOf(config)), "utf8").toLowerCase();
+      expect(svg).toContain(config.brand.colors.primary.toLowerCase());
+      expect(svg).toContain(
+        config.brand.name.toLowerCase().replace("&", "&amp;"),
+      );
+    }
+  });
+});

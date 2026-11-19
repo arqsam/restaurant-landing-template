@@ -237,6 +237,8 @@ export interface SiteConfig {
     description: string;
     /** Imagen para compartir (idealmente 1200×630, JPG). Si falta se usa la del hero. */
     ogImage?: string;
+    /** Ícono de la pestaña (SVG, PNG o ICO dentro de `public/`): "/favicon-nerita.svg". Si falta se queda el de `index.html`. */
+    favicon?: string;
     /** URL pública del sitio, sin barra final: "https://mallow-and-crumb.vercel.app". */
     siteUrl: string;
     /** Idioma y país para Open Graph: "es_MX". */
